@@ -11,46 +11,51 @@
 @interface LMViewController ()<CLLocationManagerDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
-@property (nonatomic) CLLocationDistance distance;
-@property (nonatomic) CLLocationDistance tmpDistance;
 @property (strong, nonatomic) CLLocation *location;
 @property (strong, nonatomic) CLLocation *oldLocation;
 @property (strong, nonatomic) CLLocation *currentLocation;
+@property (        nonatomic) CLLocationDistance distance;
 
-@property (strong, nonatomic) CMStepCounter *stepCounter;
+@property (strong, nonatomic) CMMotionManager *motionManager;
+@property (strong, nonatomic) CMMotionActivityManager *motionActivityManager;
 
 @property (strong, nonatomic) NSDate *startDate;
 
+@property (assign, nonatomic) int stepsCount;
+@property (assign, nonatomic) int seconds;
+@property (assign, nonatomic) int minutes;
+@property (assign, nonatomic) int hours;
 @end
 
 @implementation LMViewController
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
+    self.seconds = -1;
+    self.minutes = 0.0;
+    self.hours = 0.0;
+    
+    if ([CMMotionActivityManager isActivityAvailable]) {
+        self.motionActivityManager = [[CMMotionActivityManager alloc]init];
+        [self.motionActivityManager startActivityUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMMotionActivity *activity) {
+        }];
+    }
+
+    self.motionManager = [[CMMotionManager alloc]init];
+    self.motionManager.accelerometerUpdateInterval = 0.3;
+
     self.locationManager = [[CLLocationManager alloc]init];
     self.location = [[CLLocation alloc]init];
-    
-    if ([CMStepCounter isStepCountingAvailable]) {
-        
-        self.stepCounter = [[CMStepCounter alloc]init];
-    } else {
-        self.stepsNameLabel.hidden = YES;
-        self.stepsLabel.hidden = YES;
-        UIAlertView *stepCounterAlert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Step counting isn't available on your device" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [stepCounterAlert show];
-    }
     
     self.oldLocation = nil;
     self.currentLocation = nil;
     self.startDate = nil;
     
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.delegate = self;
     self.resetButton.hidden = YES;
     
-    NSLog(@"%@",self.locationManager.location);
-	
+    [super viewDidLoad];
 }
 
 - (void)didReceiveMemoryWarning
@@ -59,10 +64,11 @@
     
 }
 
+#pragma mark - Location Manager
+
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
-    
-    NSLog(@"%f",self.currentLocation.speed);
+    self.motionManager.showsDeviceMovementDisplay = YES;
     
     self.oldLocation = self.currentLocation;
     self.currentLocation = locations.lastObject;
@@ -72,57 +78,129 @@
          NSLog(@"%@",self.startDate);
     }
     
-    self.tmpDistance = [self.currentLocation distanceFromLocation:self.oldLocation];
-    self.distance += self.tmpDistance;
+    self.distance += [self.currentLocation distanceFromLocation:self.oldLocation];
    
-    if (self.currentLocation.speed == -1.0f) {
-        self.speedLabel.text = @"0.0";
-    } else {
-        self.speedLabel.text = [NSString stringWithFormat:@"%.1f",self.currentLocation.speed];
-    }
+    [self printSpeedValue:self.currentLocation.speed];
+    [self printDistanceValue:self.distance];
     
-    if (self.distance == -1.0f) {
-        self.distanceLabel.text = @"0.0";
-    } else {
-        self.distanceLabel.text = [NSString stringWithFormat:@"%.1f",self.distance];
-    }
+    [self printTimeValue:[self.currentLocation.timestamp timeIntervalSinceDate:self.startDate]];
     
-    CLLocation *curLoc = locations.lastObject;
-    NSDate *curDate = curLoc.timestamp;
-    self.timeLabel.text = [NSString stringWithFormat:@"%.0f",[curDate timeIntervalSinceDate:self.startDate]];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     
-    NSLog(@"Error --- %@",error.userInfo);
+    UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Error" message:[error localizedDescription] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alertView show];
+}
+
+#pragma mark - Print Values
+
+- (void)printTimeValue:(NSTimeInterval)value {
+    
+    int minutes = floor(value/60);
+    
+    if (minutes != 0) {
+        int intValue = roundf(value);
+        int seconds = intValue%(60*minutes);
+        if (seconds == 60) {
+            seconds = 0;
+        }
+        self.timeLabel.text = [NSString stringWithFormat:@"%i : %i",minutes,seconds];
+    } else {
+         self.timeLabel.text = [NSString stringWithFormat:@"%i : %.0f",minutes,value];
+    }
+}
+
+- (void)printSpeedValue:(float)value {
+    
+    if (value == -1.0f) {
+        self.speedLabel.text = @"0.0";
+    } else {
+        self.speedLabel.text = [NSString stringWithFormat:@"%.1f",value];
+    }
+}
+
+- (void)printDistanceValue:(float)value {
+    
+    if (value == -1.0f) {
+        self.distanceLabel.text = @"0.0";
+    } else {
+        self.distanceLabel.text = [NSString stringWithFormat:@"%.1f",value];
+    }
 }
 
 #pragma mark - On Buttons
 
 - (IBAction)onResetButton:(id)sender {
     
+    self.stepsCount = 0;
+    self.seconds = 0;
+    self.minutes = 0;
+    
+    self.distance = 0.0f;
+    
     self.currentLocation = nil;
     self.oldLocation = nil;
     self.startDate = nil;
-    self.distance = 0.0f;
-    self.tmpDistance = 0.0f;
+    
+    self.stepsLabel.text = @"0";
     self.distanceLabel.text= @"0.0";
     self.speedLabel.text = @"0.0";
-    self.timeLabel.text = @"0";
+    self.timeLabel.text = @"0 : 0";
 }
 
 - (IBAction)onStartButton:(id)sender {
     
     [self.locationManager startUpdatingLocation];
-    
-    [self.stepCounter startStepCountingUpdatesToQueue:[NSOperationQueue currentQueue] updateOn:1 withHandler:^(NSInteger numberOfSteps, NSDate *timestamp, NSError *error) {
-        self.stepsLabel.text = [NSString stringWithFormat:@"%ld",(long)numberOfSteps];
-    }];
+    if ([self.motionManager isAccelerometerAvailable]) {
+        
+        [self.motionManager startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMAccelerometerData *accelerometerData, NSError *error) {
+            
+            BOOL step = NO;
+            BOOL jump = NO;
+            
+            if (ABS(accelerometerData.acceleration.x) > 1) {
+                step = YES;
+                self.label.text = @"Walk";
+            }
+            if (ABS(accelerometerData.acceleration.y) > 1) {
+                step = YES;
+                self.label.text = @"Walk";
+            }
+            if (ABS(accelerometerData.acceleration.z) > 1.2) {
+                step = YES;
+                self.label.text = @"Walk";
+            }
+            if (ABS(accelerometerData.acceleration.z) > 1.7) {
+                jump = YES;
+                self.label.text = @"Run";
+            }
+            if (ABS(accelerometerData.acceleration.x) > 1.7) {
+                jump = YES;
+                self.label.text = @"Run";
+            }
+            
+            if (step) {
+                self.motionManager.accelerometerUpdateInterval = 0.3;
+                ++ self.stepsCount;
+                self.stepsLabel.text = [NSString stringWithFormat:@"%i",self.stepsCount];
+            }
+            if (jump) {
+                self.motionManager.accelerometerUpdateInterval = 0.2;
+                ++self.stepsCount;
+                self.stepsLabel.text = [NSString stringWithFormat:@"%i",self.stepsCount];
+            }
+
+            [UIApplication sharedApplication].applicationIconBadgeNumber = self.stepsCount;
+            
+        }];
+    }
+
 }
 
 - (IBAction)onStopButton:(id)sender {
     
     [self.locationManager stopUpdatingLocation];
-    [self.stepCounter stopStepCountingUpdates];
+    [self.motionManager stopAccelerometerUpdates];
 }
 @end

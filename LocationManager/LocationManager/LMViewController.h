@@ -22,5 +22,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *timeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *stepsLabel;
 @property (strong, nonatomic) IBOutlet UILabel *stepsNameLabel;
+@property (strong, nonatomic) IBOutlet UILabel *label;
+@property (strong, nonatomic) IBOutlet UILabel *motion;
 
 @end
