@@ -7,11 +7,26 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 
 @interface LMSportTracker : NSObject
 
-- (id)initTrackerWithDistanceLabel:(UILabel *)distanceLabel speedLabel:(UILabel *)speedLabel timeLabel:(UILabel *)timeLabel stepsLabel:(UILabel *)stepsLabel;
+
+@property (nonatomic, readonly) GMSMutablePath *path;
+
+@property (nonatomic, readonly) NSInteger steps;
+@property (nonatomic, readonly) NSString *time;
+@property (nonatomic, readonly) float speed;
+
+@property (nonatomic, readonly) CLLocationDistance distance;
+@property (nonatomic, readonly) CLLocation *currentLocation;
+@property (nonatomic, readonly) CLLocation *originLocation;
+
+
+- (id)initTrackerWithAccuracy:(CLLocationAccuracy)accuracy;
+- (void)backgroundMode:(BOOL)on;
 - (void)startTracker;
 - (void)stopTacker;
 - (void)resetTracker;
+
 @end

@@ -7,22 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
-#import <CoreMotion/CoreMotion.h>
+
 
 @interface LMViewController : UIViewController
 
 - (IBAction)onResetButton:(id)sender;
 - (IBAction)onStartButton:(id)sender;
 - (IBAction)onStopButton:(id)sender;
-
-
-@property (strong, nonatomic) IBOutlet UIButton *resetButton;
+- (IBAction)onMapButton:(id)sender;
 
 @property (strong, nonatomic) IBOutlet UILabel *accCountLabel;
 @property (strong, nonatomic) IBOutlet UILabel *distanceLabel;
 @property (strong, nonatomic) IBOutlet UILabel *speedLabel;
 @property (strong, nonatomic) IBOutlet UILabel *timeLabel;
-@property (strong, nonatomic) IBOutlet UILabel *tmpLabel;
 
 @end
