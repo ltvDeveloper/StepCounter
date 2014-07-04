@@ -28,7 +28,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        
     }
     return self;
 }
@@ -36,9 +36,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view
 
-    self.camera = [GMSCameraPosition cameraWithLatitude:self.currentLocation.coordinate.latitude longitude:self.currentLocation.coordinate.longitude zoom:17.0];
+    self.camera = [GMSCameraPosition cameraWithLatitude:self.currentLocation.coordinate.latitude longitude:self.currentLocation.coordinate.longitude zoom:15.0];
     self.mapView = [GMSMapView mapWithFrame:CGRectZero camera:self.camera];
     self.pathLine = [GMSPolyline polylineWithPath:self.path];
     
@@ -48,17 +47,13 @@
     self.mapView.delegate = self;
     
     self.view = self.mapView;
-    
+
 }
 
--(NSInteger )lapCount {
-    if (self.originLocation == self.currentLocation) {
-        ++self.lapsCount;
-    }
+-(void)viewDidDisappear:(BOOL)animated {
     
-    return self.lapsCount;
+    self.mapView = nil;
 }
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

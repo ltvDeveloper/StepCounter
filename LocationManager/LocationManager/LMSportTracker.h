@@ -15,8 +15,11 @@
 @property (nonatomic, readonly) GMSMutablePath *path;
 
 @property (nonatomic, readonly) NSInteger steps;
+@property (nonatomic, readonly) NSInteger laps;
 @property (nonatomic, readonly) NSString *time;
+
 @property (nonatomic, readonly) float speed;
+@property (nonatomic, readonly) float agingFactor;
 
 @property (nonatomic, readonly) CLLocationDistance distance;
 @property (nonatomic, readonly) CLLocation *currentLocation;
@@ -24,9 +27,16 @@
 
 
 - (id)initTrackerWithAccuracy:(CLLocationAccuracy)accuracy;
+
 - (void)backgroundMode:(BOOL)on;
 - (void)startTracker;
 - (void)stopTacker;
 - (void)resetTracker;
+- (void)setAccuracy:(CLLocationAccuracy)accuracy;
+
+- (float)caloriesBurned:(float)weight gender:(NSString *)gender;
+- (float)waterConsumption:(float)weight;
+- (float)fatBurned:(float)calories;
+- (NSInteger)biologicalAge:(NSString *)gender age:(NSInteger)age weight:(float)weight growth:(float)growth waistline:(float)waistline hips:(float)hips;
 
 @end

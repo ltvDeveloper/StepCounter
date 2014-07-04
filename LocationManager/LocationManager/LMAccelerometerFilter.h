@@ -12,7 +12,6 @@
 @interface LMAccelerometerFilter : NSObject {
     
     float filterConstant;
-  //  UIAccelerationValue lastX, lastY, lastZ;
 }
 
 - (id)initWithSampleRate:(double)rate cutoffFrequency:(double)freq;

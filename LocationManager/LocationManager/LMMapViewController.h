@@ -16,6 +16,4 @@
 
 @property (strong, nonatomic) GMSMutablePath *path;
 
--(NSInteger)lapCount;
-
 @end
