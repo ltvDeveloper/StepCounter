@@ -545,7 +545,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     UIAlertView *heartAlertView = [[UIAlertView alloc]initWithTitle:@"Beats" message:[NSString stringWithFormat:@"%i",self.heartRate] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     [heartAlertView show];
-    
+    NSLog(@"%i",self.heartRate);
     self.heartRate = 0;
     
 }
