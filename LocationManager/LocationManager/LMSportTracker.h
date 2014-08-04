@@ -9,34 +9,42 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
+
+typedef NS_ENUM(NSUInteger, Gender)
+{
+    Male = 0,
+    Female = 1
+};
+
 @interface LMSportTracker : NSObject
-
-
-@property (nonatomic, readonly) GMSMutablePath *path;
 
 @property (nonatomic, readonly) NSInteger steps;
 @property (nonatomic, readonly) NSInteger laps;
-@property (nonatomic, readonly) NSString *time;
+@property (nonatomic, readonly) NSInteger seconds;
 
-@property (nonatomic, readonly) float speed;
-@property (nonatomic, readonly) float agingFactor;
+@property (nonatomic, readonly) CGFloat speed;
+@property (nonatomic, readonly) CGFloat agingFactor;
 
 @property (nonatomic, readonly) CLLocationDistance distance;
 @property (nonatomic, readonly) CLLocation *currentLocation;
 @property (nonatomic, readonly) CLLocation *originLocation;
 
-
+//lifecycle
 - (id)initTrackerWithAccuracy:(CLLocationAccuracy)accuracy;
-
-- (void)backgroundMode:(BOOL)on;
 - (void)startTracker;
 - (void)stopTacker;
 - (void)resetTracker;
-- (void)setAccuracy:(CLLocationAccuracy)accuracy;
 
-- (float)caloriesBurned:(float)weight gender:(NSString *)gender;
-- (float)waterConsumption:(float)weight;
-- (float)fatBurned:(float)calories;
-- (NSInteger)biologicalAge:(NSString *)gender age:(NSInteger)age weight:(float)weight growth:(float)growth waistline:(float)waistline hips:(float)hips;
+//Public methods
+- (void)enterBackground;
+- (void)exitBackground;
+- (void)startMeasuringHeartRate;
+- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender;
+- (CGFloat)waterConsumption:(CGFloat)weight;
+- (CGFloat)fatBurned:(CGFloat)calories;
+- (NSInteger)biologicalAge:(Gender)gender age:(NSInteger)age weight:(CGFloat)weight height:(CGFloat)height waistline:(CGFloat)waistline hips:(CGFloat)hips;
+
+//accessors
+- (void)setAccuracy:(CLLocationAccuracy)accuracy;
 
 @end

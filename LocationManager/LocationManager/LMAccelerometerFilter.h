@@ -11,15 +11,15 @@
 
 @interface LMAccelerometerFilter : NSObject {
     
-    float filterConstant;
+    CGFloat filterConstant;
 }
 
-- (id)initWithSampleRate:(double)rate cutoffFrequency:(double)freq;
+- (id)initWithSampleRate:(CGFloat)rate cutoffFrequency:(CGFloat)freq;
 - (void)addAcceleration:(CMAccelerometerData*)accel;
 
-@property (nonatomic, readonly) float x;
-@property (nonatomic, readonly) float y;
-@property (nonatomic, readonly) float z;
+@property (nonatomic, readonly) CGFloat x;
+@property (nonatomic, readonly) CGFloat y;
+@property (nonatomic, readonly) CGFloat z;
 
 @property (nonatomic, getter=isAdaptive) BOOL adaptive;
 

@@ -32,13 +32,13 @@ double Clamp(double v, double min, double max)
 }
 
 
-- (id)initWithSampleRate:(double)rate cutoffFrequency:(double)freq
+- (id)initWithSampleRate:(CGFloat)rate cutoffFrequency:(CGFloat)freq
 {
 	self = [super init];
 	if(self != nil)
 	{
-		double dt = 1.0 / rate;
-		double RC = 1.0 / freq;
+		CGFloat dt = 1.0 / rate;
+		CGFloat RC = 1.0 / freq;
 		filterConstant = dt / (dt + RC);
 	}
 	return self;
@@ -46,11 +46,11 @@ double Clamp(double v, double min, double max)
 
 - (void)addAcceleration:(CMAccelerometerData *)accel
 {
-	double alpha = filterConstant;
+	CGFloat alpha = filterConstant;
 	
 	if(adaptive)
 	{
-		double d = Clamp(fabs(Norm(x, y, z) - Norm(accel.acceleration.x, accel.acceleration.y, accel.acceleration.z)) / kAccelerometerMinStep - 1.0, 0.0, 1.0);
+		CGFloat d = Clamp(fabs(Norm(x, y, z) - Norm(accel.acceleration.x, accel.acceleration.y, accel.acceleration.z)) / kAccelerometerMinStep - 1.0, 0.0, 1.0);
 		alpha = (1.0 - d) * filterConstant / kAccelerometerNoiseAttenuation + d * filterConstant;
 	}
 	

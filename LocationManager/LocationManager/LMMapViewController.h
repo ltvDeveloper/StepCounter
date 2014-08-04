@@ -7,13 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <GoogleMaps/GoogleMaps.h>
 
 @interface LMMapViewController : UIViewController
 
 @property (strong, nonatomic) CLLocation *currentLocation;
-@property (strong, nonatomic) CLLocation *originLocation;
-
-@property (strong, nonatomic) GMSMutablePath *path;
 
 @end

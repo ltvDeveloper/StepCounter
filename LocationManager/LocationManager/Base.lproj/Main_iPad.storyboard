@@ -305,11 +305,11 @@
                                 </connections>
                             </button>
                             <view alpha="0.94999999999999996" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dst-gm-qap">
-                                <rect key="frame" x="0.0" y="62" width="768" height="186"/>
+                                <rect key="frame" x="0.0" y="62" width="768" height="404"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o78-58-uyP">
-                                        <rect key="frame" x="110" y="20" width="113" height="30"/>
+                                        <rect key="frame" x="45" y="65" width="113" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <attributedString key="attributedText">
                                             <fragment content="Your weight">
@@ -337,7 +337,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="n3I-6j-HWr">
-                                        <rect key="frame" x="110" y="64" width="113" height="30"/>
+                                        <rect key="frame" x="202" y="66" width="113" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -371,6 +371,30 @@
                                             <action selector="onGenderControl:" destination="BYZ-38-t0r" eventType="valueChanged" id="gDU-Di-J4C"/>
                                         </connections>
                                     </segmentedControl>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aM4-sU-4KB">
+                                        <rect key="frame" x="210" y="117" width="97" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S4x-Xr-b5I">
+                                        <rect key="frame" x="210" y="171" width="97" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qRj-k5-ZAr">
+                                        <rect key="frame" x="210" y="230" width="97" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uf3-zi-z3T">
+                                        <rect key="frame" x="210" y="278" width="97" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" red="0.50581964010000002" green="0.69864803080000004" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
@@ -427,13 +451,17 @@
                     <navigationItem key="navigationItem" id="bpo-Kt-7j7"/>
                     <connections>
                         <outlet property="accCountLabel" destination="ief-wZ-oTk" id="583-Z2-c7I"/>
+                        <outlet property="ageTextField" destination="uf3-zi-z3T" id="UQu-Ab-fG8"/>
                         <outlet property="burnedCaloriesLabel" destination="BzM-cQ-s6j" id="z4c-xk-BsG"/>
                         <outlet property="distanceLabel" destination="Mmh-l6-1rg" id="kHa-8s-Jpq"/>
                         <outlet property="genderControl" destination="dtk-Od-T1H" id="1hc-F4-SsS"/>
+                        <outlet property="growthTextField" destination="qRj-k5-ZAr" id="Ck9-J0-4Ck"/>
+                        <outlet property="hipsTextField" destination="aM4-sU-4KB" id="or4-Lf-9fN"/>
+                        <outlet property="settingsView" destination="dst-gm-qap" id="iSa-ze-zUk"/>
                         <outlet property="speedLabel" destination="sbs-kP-IQL" id="1Nn-c4-brO"/>
                         <outlet property="timeLabel" destination="ztd-VM-5yV" id="0rO-ZS-55a"/>
+                        <outlet property="waistlineTextField" destination="S4x-Xr-b5I" id="A9b-Mr-mMh"/>
                         <outlet property="weightTextField" destination="n3I-6j-HWr" id="wIs-ui-hHz"/>
-                        <outlet property="weightView" destination="dst-gm-qap" id="aB9-Gj-9wO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

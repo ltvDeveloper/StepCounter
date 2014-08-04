@@ -24,12 +24,10 @@
 @property (strong, nonatomic) NSString *gender;
 
 @property (nonatomic) NSInteger age;
-@property (nonatomic) NSInteger growth;
+@property (nonatomic) NSInteger height;
 
-@property (nonatomic) float waistline;
-@property (nonatomic) float hips;
-
-@property (assign, nonatomic) BOOL isStop;
+@property (nonatomic) CGFloat waistline;
+@property (nonatomic) CGFloat hips;
 
 @end
 
@@ -47,20 +45,20 @@
 
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     
-    if (!self.isStop) {
+    if (![self.trackerUpdateTimer isValid]) {
         if (self.sportTracker != nil) {
-            [self.sportTracker backgroundMode:NO];
+            [self.sportTracker exitBackground];
         }
     }
     
 }
 
--(void)viewDidDisappear:(BOOL)animated {
+- (void)viewDidDisappear:(BOOL)animated {
     
     if (self.sportTracker != nil) {
-        [self.sportTracker backgroundMode:YES];
+        [self.sportTracker enterBackground];
     }
     
 }
@@ -73,19 +71,19 @@
     
     self.speedLabel.text = [NSString stringWithFormat:@"%.1f",self.sportTracker.speed * 3.6];
     
-    if (self.sportTracker.time != nil) {
-        self.timeLabel.text = self.sportTracker.time;
+    if (self.sportTracker.seconds != 0) {
+        self.timeLabel.text = [self intervalToTime:self.sportTracker.seconds];
     }
     
     self.accCountLabel.text = [NSString stringWithFormat:@"%li",(long)self.sportTracker.steps];
     
     if (self.sportTracker.laps != -1) {
-        self.lapLabel.text = [NSString stringWithFormat:@"%i",self.sportTracker.laps];
+        self.lapLabel.text = [NSString stringWithFormat:@"%li",(long)self.sportTracker.laps];
     }
     
-    self.burnedCaloriesLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.gender]];
+    self.burnedCaloriesLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex]];
     self.consumptionWaterLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker waterConsumption:[self.weight floatValue]]];
-    self.fatLabel.text = [NSString stringWithFormat:@"%.2f",[self.sportTracker fatBurned:[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.gender]]];
+    self.fatLabel.text = [NSString stringWithFormat:@"%.2f",[self.sportTracker fatBurned:[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex]]];
     
 }
 
@@ -94,28 +92,47 @@
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark - Proximity State Change Notification
+#pragma mark - Enter/Exit Background
 
 - (void)proximityChanged:(NSNotificationCenter *)center {
     
     if ([UIDevice currentDevice].proximityState == YES) {
         if (self.sportTracker != nil) {
-            [self.sportTracker backgroundMode:YES];
+            [self.sportTracker enterBackground];
         }
     } else {
         if (self.sportTracker != nil) {
-            [self.sportTracker backgroundMode:NO];
+            [self.sportTracker exitBackground];
         }
     }
 }
 
-#pragma mark - Battery Level Change Notification
+#pragma mark - Convert Interval to Time
 
-- (void)batteryLevelChanged:(NSNotificationCenter *)center {
+- (NSString *)intervalToTime:(NSTimeInterval)interval {
     
-    if ([UIDevice currentDevice].batteryLevel <= 5.0f) {
-        [self.sportTracker setAccuracy:kCLLocationAccuracyKilometer];
+    NSInteger minutes = floor(interval/60);
+    NSInteger intInterval = interval;
+    NSString *time = @"";
+    
+    if (minutes != 0) {
+        NSInteger seconds = intInterval%(60*minutes);
+        if (seconds == 60) {
+            seconds = 0;
+        }
+        if (seconds < 10) {
+            time = [NSString stringWithFormat:@"%li : 0%@",(long)minutes, [NSString stringWithFormat:@"%li",(long)seconds]];
+        } else
+            time = [NSString stringWithFormat:@"%li : %li",(long)minutes, (long)seconds];
+    } else {
+        if (interval < 10) {
+            time = [NSString stringWithFormat:@"%li : 0%@",(long)minutes, [NSString stringWithFormat:@"%li",(long)interval]];
+        } else
+            time = [NSString stringWithFormat:@"%li : %li",(long)minutes, (long)interval];
     }
+    
+    return time;
+
 }
 
 #pragma mark - On Buttons
@@ -130,39 +147,43 @@
     self.accCountLabel.text = @"0";
     self.lapLabel.text = @"0";
     self.burnedCaloriesLabel.text = @"0.0";
-    self.consumptionWaterLabel.text = @"0.000";
+    self.consumptionWaterLabel.text = @"0.0";
     self.fatLabel.text = @"0.00";
+    self.biologicalAgeLabel.text = @"0";
+    self.agingFactorLabel.text = @"0.0";
+    self.weightTextField.text = @"";
+    self.ageTextField.text = @"";
+    self.waistlineTextField.text = @"";
+    self.hipsTextField.text = @"";
+    self.heightTextField.text = @"";
+    
 }
 
 - (IBAction)onStartButton:(id)sender {
 
-    
-    
-    self.isStop = NO;
-    
     [self.sportTracker startTracker];
     
-    self.trackerUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(trackerUpdate) userInfo:nil repeats:YES];
+    if (![self.trackerUpdateTimer isValid]) {
+        self.trackerUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(trackerUpdate) userInfo:nil repeats:YES];
+    }
+    
 }
 
 - (IBAction)onStopButton:(id)sender {
-    
-    self.isStop = YES;
     
     [self.sportTracker stopTacker];
     [self.trackerUpdateTimer invalidate];
 }
 
--(void)onMapButton:(id)sender {
+- (void)onMapButton:(id)sender {
     
     self.mapViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"MapViewController"];
-    self.mapViewController.path = self.sportTracker.path;
     self.mapViewController.currentLocation = self.sportTracker.currentLocation;
     [self.navigationController pushViewController:self.mapViewController animated:YES];
 }
 
 - (IBAction)onSettingsButton:(id)sender {
-    
+        
     if (self.settingsView.hidden) {
         CATransition *transition = [CATransition animation];
         transition.duration = 0.2;
@@ -178,28 +199,17 @@
     
     self.weight = self.weightTextField.text;
     self.age = [self.ageTextField.text integerValue];
-    self.growth = [self.growthTextField.text floatValue];
+    self.height = [self.heightTextField.text floatValue];
     self.waistline = [self.waistlineTextField.text floatValue];
     self.hips = [self.hipsTextField.text floatValue];
     [self.settingsView endEditing:YES];
     self.settingsView.hidden = YES;
     
-    NSInteger bAge = [self.sportTracker biologicalAge:self.gender age:self.age weight:[self.weight integerValue] growth:self.growth waistline:self.waistline hips:self.hips];
-    self.biologicalAgeLabel.text = [NSString stringWithFormat:@"%i",bAge];
+    NSInteger bAge = [self.sportTracker biologicalAge:self.genderControl.selectedSegmentIndex age:self.age weight:[self.weight integerValue] height:self.height waistline:self.waistline hips:self.hips];
+    self.biologicalAgeLabel.text = [NSString stringWithFormat:@"%li",(long)bAge];
     self.agingFactorLabel.text = [NSString stringWithFormat:@"%.1f",self.sportTracker.agingFactor];
 }
 
-- (IBAction)onGenderControl:(id)sender {
-    
-    switch (self.genderControl.selectedSegmentIndex) {
-        case 0:
-            self.gender = @"Male";
-            break;
-        case 1:
-            self.gender = @"Female";
-            break;
-    }
-}
 
 - (IBAction)onMetabolismButton:(id)sender {
     
@@ -219,7 +229,6 @@
         
         self.metabolismView.hidden = YES;
     }
-    
     
 }
 

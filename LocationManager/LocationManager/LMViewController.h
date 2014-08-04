@@ -17,7 +17,6 @@
 - (IBAction)onMapButton:(id)sender;
 - (IBAction)onSettingsButton:(id)sender;
 - (IBAction)onOKButton:(id)sender;
-- (IBAction)onGenderControl:(id)sender;
 - (IBAction)onMetabolismButton:(id)sender;
 
 
@@ -38,7 +37,7 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *weightTextField;
 @property (strong, nonatomic) IBOutlet UITextField *ageTextField;
-@property (strong, nonatomic) IBOutlet UITextField *growthTextField;
+@property (strong, nonatomic) IBOutlet UITextField *heightTextField;
 @property (strong, nonatomic) IBOutlet UITextField *waistlineTextField;
 @property (strong, nonatomic) IBOutlet UITextField *hipsTextField;
 

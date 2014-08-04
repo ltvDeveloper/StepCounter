@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="LogPoint" representedClassName="LogPoint" syncable="YES">
+        <attribute name="latitude" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="logPoint" inverseEntity="Session" syncable="YES"/>
+    </entity>
+    <entity name="Session" representedClassName="Session" syncable="YES">
+        <attribute name="calories" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="kilometers" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="path" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="logPoint" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="LogPoint" inverseName="session" inverseEntity="LogPoint" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="LogPoint" positionX="-5132" positionY="-1413" width="128" height="118"/>
+        <element name="Session" positionX="-5483" positionY="-1465" width="128" height="163"/>
+    </elements>
+</model>

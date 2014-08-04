@@ -24,7 +24,9 @@
 		8B568E571951AA2B00D5EC48 /* LocationManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B568E561951AA2B00D5EC48 /* LocationManagerTests.m */; };
 		8B568E611951AA3800D5EC48 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B568E601951AA3800D5EC48 /* CoreLocation.framework */; };
 		8B568E631951C4F900D5EC48 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B568E621951C4F900D5EC48 /* CoreMotion.framework */; };
-		8BA783BA195BF3DC00C805D6 /* LMAccelerometerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BA783B9195BF3DC00C805D6 /* LMAccelerometerFilter.m */; };
+		8B9CC5431975278B004CB438 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B9CC5421975278B004CB438 /* Session.m */; };
+		8BA6B397197407E5000A8133 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8BA6B395197407E5000A8133 /* Model.xcdatamodeld */; };
+		8BA6B39D19740C94000A8133 /* LogPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BA6B39C19740C94000A8133 /* LogPoint.m */; };
 		8BA783BE195C069100C805D6 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BA783BD195C069100C805D6 /* GoogleMaps.framework */; };
 		8BA78424195C14DF00C805D6 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8BA78423195C14DF00C805D6 /* GoogleMaps.bundle */; };
 		8BA78426195C154C00C805D6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BA78425195C154C00C805D6 /* AVFoundation.framework */; };
@@ -75,8 +77,11 @@
 		8B568E561951AA2B00D5EC48 /* LocationManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManagerTests.m; sourceTree = "<group>"; };
 		8B568E601951AA3800D5EC48 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		8B568E621951C4F900D5EC48 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		8BA783B8195BF3DC00C805D6 /* LMAccelerometerFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMAccelerometerFilter.h; sourceTree = "<group>"; };
-		8BA783B9195BF3DC00C805D6 /* LMAccelerometerFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMAccelerometerFilter.m; sourceTree = "<group>"; };
+		8B9CC5411975278B004CB438 /* Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
+		8B9CC5421975278B004CB438 /* Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
+		8BA6B396197407E5000A8133 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		8BA6B39B19740C94000A8133 /* LogPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogPoint.h; sourceTree = "<group>"; };
+		8BA6B39C19740C94000A8133 /* LogPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogPoint.m; sourceTree = "<group>"; };
 		8BA783BD195C069100C805D6 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = Frameworks/GoogleMaps.framework; sourceTree = "<group>"; };
 		8BA78423195C14DF00C805D6 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = Frameworks/GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		8BA78425195C154C00C805D6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -101,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BA78426195C154C00C805D6 /* AVFoundation.framework in Frameworks */,
 				8BA7843A195C158C00C805D6 /* SystemConfiguration.framework in Frameworks */,
 				8BA78438195C158700C805D6 /* QuartzCore.framework in Frameworks */,
 				8BA78436195C158200C805D6 /* OpenGLES.framework in Frameworks */,
@@ -111,7 +117,6 @@
 				8BA7842C195C155F00C805D6 /* GLKit.framework in Frameworks */,
 				8BA7842A195C155900C805D6 /* CoreText.framework in Frameworks */,
 				8BA78428195C155200C805D6 /* CoreData.framework in Frameworks */,
-				8BA78426195C154C00C805D6 /* AVFoundation.framework in Frameworks */,
 				8BA783BE195C069100C805D6 /* GoogleMaps.framework in Frameworks */,
 				8B568E631951C4F900D5EC48 /* CoreMotion.framework in Frameworks */,
 				8B568E611951AA3800D5EC48 /* CoreLocation.framework in Frameworks */,
@@ -192,8 +197,11 @@
 				8BD8A9DE195B04DC00A87EB6 /* LMSportTracker.m */,
 				8BA7843B195C19C500C805D6 /* LMMapViewController.h */,
 				8BA7843C195C19C500C805D6 /* LMMapViewController.m */,
-				8BA783B8195BF3DC00C805D6 /* LMAccelerometerFilter.h */,
-				8BA783B9195BF3DC00C805D6 /* LMAccelerometerFilter.m */,
+				8BA6B39B19740C94000A8133 /* LogPoint.h */,
+				8BA6B39C19740C94000A8133 /* LogPoint.m */,
+				8B9CC5411975278B004CB438 /* Session.h */,
+				8B9CC5421975278B004CB438 /* Session.m */,
+				8BA6B395197407E5000A8133 /* Model.xcdatamodeld */,
 				8B568E431951AA2B00D5EC48 /* Images.xcassets */,
 				8B568E2F1951AA2B00D5EC48 /* Supporting Files */,
 			);
@@ -332,9 +340,11 @@
 				8BD8A9DF195B04DC00A87EB6 /* LMSportTracker.m in Sources */,
 				8B568E351951AA2B00D5EC48 /* main.m in Sources */,
 				8B568E391951AA2B00D5EC48 /* LMAppDelegate.m in Sources */,
+				8BA6B397197407E5000A8133 /* Model.xcdatamodeld in Sources */,
 				8B568E421951AA2B00D5EC48 /* LMViewController.m in Sources */,
 				8BA7843D195C19C500C805D6 /* LMMapViewController.m in Sources */,
-				8BA783BA195BF3DC00C805D6 /* LMAccelerometerFilter.m in Sources */,
+				8BA6B39D19740C94000A8133 /* LogPoint.m in Sources */,
+				8B9CC5431975278B004CB438 /* Session.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -479,8 +489,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LocationManager/LocationManager-Prefix.pch";
 				INFOPLIST_FILE = "LocationManager/LocationManager-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "5A71950E-983E-4C55-99EF-1A7EA04D371B";
+				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -498,8 +510,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LocationManager/LocationManager-Prefix.pch";
 				INFOPLIST_FILE = "LocationManager/LocationManager-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "5A71950E-983E-4C55-99EF-1A7EA04D371B";
+				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -575,6 +589,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		8BA6B395197407E5000A8133 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				8BA6B396197407E5000A8133 /* Model.xcdatamodel */,
+			);
+			currentVersion = 8BA6B396197407E5000A8133 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 8B568E1D1951AA2B00D5EC48 /* Project object */;
 }
