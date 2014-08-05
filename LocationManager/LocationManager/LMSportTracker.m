@@ -47,6 +47,7 @@
 @property (assign, nonatomic) NSInteger boostTime;
 
 @property (assign, nonatomic) CGFloat burnedCalories;
+@property (assign, nonatomic) CGFloat water;
 @property (assign, nonatomic) CGFloat lastSpeed;
 @property (assign, nonatomic) CGFloat sumBoostSpeed;
 @property (assign, nonatomic) CGFloat deltaValue;
@@ -186,11 +187,9 @@
 - (CGFloat)waterConsumption:(CGFloat)weight {
     
     if (speed != 0.f) {
+        self.water +=  ((weight/100.f)/3600.f) * 1000.f;
         
-        CGFloat water = 0.f;
-        water =  ((weight/100.f)/3600.f)*self.activityInterval*1000.f;
-        
-        return water;
+        return self.water;
     }
     
     return 0;
@@ -369,6 +368,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         self.sportSession.speed = @([self averageSpeed]);
         self.sportSession.time = @(seconds);
         self.sportSession.path = pathData;
+        self.sportSession.activityInterval = @(self.activityInterval);
         [self.managedObjectContext save:nil];
     }
     
@@ -469,6 +469,14 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         [self.managedObjectContext deleteObject:recoveredSession];
         recoveredSession = [NSEntityDescription insertNewObjectForEntityForName:@"Session" inManagedObjectContext:self.managedObjectContext];
         [self.managedObjectContext save:nil];
+        
+    } else {
+        distance += [recoveredSession.kilometers floatValue]*1000.f;
+        seconds = [recoveredSession.time floatValue];
+        self.burnedCalories = [recoveredSession.calories floatValue];
+        self.activityInterval = [recoveredSession.activityInterval integerValue];
+        laps -= 1;
+        
     }
     
     return recoveredSession;
@@ -545,7 +553,6 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     UIAlertView *heartAlertView = [[UIAlertView alloc]initWithTitle:@"Beats" message:[NSString stringWithFormat:@"%i",self.heartRate] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     [heartAlertView show];
-    NSLog(@"%i",self.heartRate);
     self.heartRate = 0;
     
 }

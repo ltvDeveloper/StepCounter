@@ -25,7 +25,7 @@ typedef NS_ENUM(NSUInteger, Gender)
 @property (nonatomic, readonly) CGFloat speed;
 @property (nonatomic, readonly) CGFloat agingFactor;
 
-@property (nonatomic, readonly) CLLocationDistance distance;
+@property (nonatomic, readonly) CGFloat distance;
 @property (nonatomic, readonly) CLLocation *currentLocation;
 @property (nonatomic, readonly) CLLocation *originLocation;
 
