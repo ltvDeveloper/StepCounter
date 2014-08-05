@@ -89,6 +89,7 @@
     
     self.speedArray = [[NSMutableArray alloc]init];
     
+    //Creation or recovery of a new session
     if (self.fetchedResultsController.fetchedObjects.count == 0) {
         self.sportSession = [self newSession];
     } else {
@@ -281,6 +282,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
 
 - (void)acceleration:(CMAccelerometerData *)accelerometerData {
     
+    //Calculating motion vector, if vector's length > 1.15f the user stepped
+    
     CGFloat squaredAccelerometerData = sqrtf(accelerometerData.acceleration.x * accelerometerData.acceleration.x + accelerometerData.acceleration.y * accelerometerData.acceleration.y + accelerometerData.acceleration.z * accelerometerData.acceleration.z);
     if (squaredAccelerometerData > 1.15f) {
         ++steps;
@@ -300,6 +303,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
 }
 
 - (CGFloat)averageSpeed {
+    
+    //Calculating average speed by creating speed array and dividing it into count of array elements
     
     CGFloat sumSpeed = 0.f;
     CGFloat avSpeed = 0.f;
@@ -351,11 +356,13 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     }
     
     if (self.sportSession) {
+        
+        //Creating and archiving path from NSMutableArray to NSData
         NSMutableArray *pathArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.path]];
         [pathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
-        
         NSData *pathData = [NSKeyedArchiver archivedDataWithRootObject:pathArray];
         
+        //Save data to the Core Data
         self.sportSession.kilometers = @(distance/1000.f);
         self.sportSession.calories = @(self.burnedCalories);
         self.sportSession.speed = @([self averageSpeed]);
@@ -379,6 +386,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     static CGFloat sprintSpeed = 0.f;
     
+    // If the current speed is greater than previous, then sprintTimer is firing
     if (![self.sprintTimer isValid] && self.seconds > 5) {
         if (speed * 3.6f - self.lastSpeed * 3.6f > 3.f) {
             self.sprintTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(onSprintTimer) userInfo:nil repeats:YES];
@@ -387,10 +395,13 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         }
     }
     
+    // If the current speed is less than previous, then sprintTimer is invalidate
     if (speed * 3.6f < sprintSpeed && self.isSprint && self.sprintTime != 0) {
         [self.sprintTimer invalidate];
         CGFloat avSpeed = 0.f;
         avSpeed = self.sumSprintSpeed / self.sprintTime;
+        
+        //Creating a log point, and save it to the Core Data
         
         LogPoint *newLogPoint = [NSEntityDescription insertNewObjectForEntityForName:@"LogPoint" inManagedObjectContext:self.managedObjectContext];
         newLogPoint.speed = @(avSpeed);
@@ -422,6 +433,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     if (self.sportSession != nil) {
         self.sportSession.path = nil;
+        
+        // Deleting all log points in session
         
         for (LogPoint *logPoint in self.sportSession.logPoint) {
             [self.managedObjectContext deleteObject:logPoint];
@@ -457,18 +470,16 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     Session *recoveredSession = [self.fetchedResultsController.fetchedObjects objectAtIndex:0];
     
+    // If last session have endDate, then creating new session
     if (recoveredSession.endDate != nil) {
-        recoveredSession = [self.fetchedResultsController.fetchedObjects objectAtIndex:0];
-        [self.managedObjectContext deleteObject:recoveredSession];
         recoveredSession = [NSEntityDescription insertNewObjectForEntityForName:@"Session" inManagedObjectContext:self.managedObjectContext];
         [self.managedObjectContext save:nil];
         
-    } else {
+    } else { // If last session haven't endDate, then use last session
         distance += [recoveredSession.kilometers floatValue]*1000.f;
         seconds = [recoveredSession.time floatValue];
         self.burnedCalories = [recoveredSession.calories floatValue];
         self.activityInterval = [recoveredSession.activityInterval integerValue];
-        laps -= 1;
         
     }
     
