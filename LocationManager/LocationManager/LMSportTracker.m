@@ -1,11 +1,4 @@
 
-//
-//  LMSportTracker.m
-//  LocationManager
-//
-//  Created by Developer on 6/25/14.
-//  Copyright (c) 2014 developer. All rights reserved.
-//
 
 #import <CoreMotion/CoreMotion.h>
 #import <CoreData/CoreData.h>
@@ -39,22 +32,22 @@
 
 @property (strong, nonatomic) NSTimer *sessionTimer;
 @property (strong, nonatomic) NSTimer *heartTimer;
-@property (strong, nonatomic) NSTimer *boostTimer;
+@property (strong, nonatomic) NSTimer *sprintTimer;
 
 @property (strong, nonatomic) NSMutableArray *speedArray;
 
 @property (assign, nonatomic) NSInteger heartRate;
-@property (assign, nonatomic) NSInteger boostTime;
+@property (assign, nonatomic) NSInteger sprintTime;
 
 @property (assign, nonatomic) CGFloat burnedCalories;
 @property (assign, nonatomic) CGFloat water;
 @property (assign, nonatomic) CGFloat lastSpeed;
-@property (assign, nonatomic) CGFloat sumBoostSpeed;
+@property (assign, nonatomic) CGFloat sumSprintSpeed;
 @property (assign, nonatomic) CGFloat deltaValue;
 @property (assign, nonatomic) CGFloat lastDeltaValue;
 @property (assign, nonatomic) CGFloat lastValue;
 
-@property (assign, nonatomic) BOOL isBoost;
+@property (assign, nonatomic) BOOL isSprint;
 
 @property (assign, nonatomic) NSTimeInterval activityInterval;
 
@@ -301,7 +294,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     [self.motionManager stopAccelerometerUpdates];
     
     [self.sessionTimer invalidate];
-    [self.boostTimer invalidate];
+    [self.sprintTimer invalidate];
     
     [UIDevice currentDevice].proximityMonitoringEnabled = NO;
 }
@@ -354,7 +347,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     }
     
     if (speed > 0.f) {
-        [self handlingBoost];
+        [self handlingSprint];
     }
     
     if (self.sportSession) {
@@ -374,43 +367,43 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
 }
 
-#pragma mark - Handling Boost
+#pragma mark - Handling Sprint
 
-- (void)onBoostTimer {
+- (void)onSprintTimer {
     
-    ++self.boostTime;
-    self.sumBoostSpeed += speed * 3.6f;
+    ++self.sprintTime;
+    self.sumSprintSpeed += speed * 3.6f;
 }
 
-- (void)handlingBoost {
+- (void)handlingSprint {
     
-    static CGFloat boostSpeed = 0.f;
+    static CGFloat sprintSpeed = 0.f;
     
-    if (![self.boostTimer isValid] && self.seconds > 5) {
+    if (![self.sprintTimer isValid] && self.seconds > 5) {
         if (speed * 3.6f - self.lastSpeed * 3.6f > 3.f) {
-            self.boostTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(onBoostTimer) userInfo:nil repeats:YES];
-            self.isBoost = YES;
-            boostSpeed = speed * 3.6f;
+            self.sprintTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(onSprintTimer) userInfo:nil repeats:YES];
+            self.isSprint = YES;
+            sprintSpeed = speed * 3.6f;
         }
     }
     
-    if (speed * 3.6f < boostSpeed && self.isBoost && self.boostTime != 0) {
-        [self.boostTimer invalidate];
+    if (speed * 3.6f < sprintSpeed && self.isSprint && self.sprintTime != 0) {
+        [self.sprintTimer invalidate];
         CGFloat avSpeed = 0.f;
-        avSpeed = self.sumBoostSpeed / self.boostTime;
+        avSpeed = self.sumSprintSpeed / self.sprintTime;
         
         LogPoint *newLogPoint = [NSEntityDescription insertNewObjectForEntityForName:@"LogPoint" inManagedObjectContext:self.managedObjectContext];
         newLogPoint.speed = @(avSpeed);
-        newLogPoint.time = @(self.boostTime);
+        newLogPoint.time = @(self.sprintTime);
         newLogPoint.latitude = @(currentLocation.coordinate.latitude);
         newLogPoint.longitude = @(currentLocation.coordinate.longitude);
         [self.sportSession addLogPointObject:newLogPoint];
         [self.managedObjectContext save:nil];
         
-        self.sumBoostSpeed = 0.f;
-        self.boostTime = 0;
-        boostSpeed = 0.f;
-        self.isBoost = NO;
+        self.sumSprintSpeed = 0.f;
+        self.sprintTime = 0;
+        sprintSpeed = 0.f;
+        self.isSprint = NO;
     }
     
     self.lastSpeed = speed;
@@ -442,7 +435,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     laps = 0;
     seconds = 0;
     self.activityInterval = 0;
-    self.boostTime = 0;
+    self.sprintTime = 0;
     
     distance = 0.f;
     speed = 0.f;
@@ -456,7 +449,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     self.heartRate = 0;
     
-    [self.boostTimer invalidate];
+    [self.sprintTimer invalidate];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 
