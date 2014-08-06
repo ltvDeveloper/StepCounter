@@ -22,6 +22,8 @@
 @property (strong, nonatomic) GMSMutablePath *path;
 @property (strong, nonatomic) GMSPolyline *pathLine;
 
+@property (strong, nonatomic) LMSportTracker *sportTracker;
+
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -51,8 +53,14 @@
         _timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(onTimer) userInfo:nil repeats:YES];
     }
     
+    GMSCameraPosition *camera;
+    
+    camera = [GMSCameraPosition cameraWithLatitude:self.currentLocation.coordinate.latitude longitude:self.currentLocation.coordinate.longitude zoom:15.0];
+    self.mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    
     if (self.fetchedResultsController.fetchedObjects.count != 0) {
-        Session *session = [[self.fetchedResultsController fetchedObjects]objectAtIndex:0];
+        Session *session = [[self.fetchedResultsController fetchedObjects]firstObject];
+        NSLog(@"%@",session.startDate);
         
         [self drawPathWithData:session.path];
         [self drawLogPoints:[session.logPoint allObjects]];
@@ -65,8 +73,13 @@
 
 - (void)onTimer {
     
-    self.fetchedResultsController = [self fetchedResultsController];
-    NSLog(@"%i",self.fetchedResultsController.fetchedObjects.count);
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc]initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [context setPersistentStoreCoordinator:self.persistentStoreCoordinator];
+    NSFetchRequest *request = [[NSFetchRequest alloc]init];
+    [request setEntity:[NSEntityDescription entityForName:@"Session" inManagedObjectContext:context]];
+    NSArray *res = [context executeFetchRequest:request error:nil];
+    Session *ss = [res lastObject];
+    [self drawPathWithData:ss.path];
 }
 
 - (void)drawPathWithData:(NSData *)data {
@@ -91,11 +104,6 @@
         
         [self.path addLatitude:[latitude floatValue] longitude:[longitude floatValue]];
     }
-    
-    GMSCameraPosition *camera;
-    
-    camera = [GMSCameraPosition cameraWithLatitude:self.currentLocation.coordinate.latitude longitude:self.currentLocation.coordinate.longitude zoom:15.0];
-    self.mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     
     self.pathLine = [GMSPolyline polylineWithPath:self.path];
     self.pathLine.strokeColor = [UIColor greenColor];
@@ -153,6 +161,7 @@
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
 	NSError *error = nil;
+    
 	if (![self.fetchedResultsController performFetch:&error]) {
 	    abort();
 	}

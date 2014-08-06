@@ -77,15 +77,17 @@
     self.deltaValue = 0.f;
     self.lastDeltaValue = 0.f;
     self.lastValue = 0.f;
-
-    self.locationManager = [[CLLocationManager alloc]init];
-    self.locationManager.desiredAccuracy = accuracy;
-    self.locationManager.delegate = self;
     
     self.oldLocation = nil;
     currentLocation = nil;
     originLocation = nil;
     self.startDate = nil;
+    
+    if (self.locationManager == nil) {
+        self.locationManager = [[CLLocationManager alloc]init];
+        self.locationManager.desiredAccuracy = accuracy;
+        self.locationManager.delegate = self;
+    }
     
     self.speedArray = [[NSMutableArray alloc]init];
     
@@ -95,7 +97,7 @@
     } else {
         self.sportSession = [self recoverSession];
     }
-
+    
     NSLog(@"%i",self.fetchedResultsController.fetchedObjects.count);
     
     return self;
@@ -487,9 +489,9 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         [self.managedObjectContext save:nil];
         
     } else { // If last session haven't endDate, then use last session
-        NSLog(@"1");
+        NSLog(@"!1");
         distance += [recoveredSession.kilometers floatValue]*1000.f;
-        seconds = [recoveredSession.time floatValue];
+        seconds += [recoveredSession.time floatValue];
         self.burnedCalories = [recoveredSession.calories floatValue];
         self.activityInterval = [recoveredSession.activityInterval integerValue];
         

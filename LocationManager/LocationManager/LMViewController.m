@@ -45,24 +45,6 @@
 
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    
-    if (![self.trackerUpdateTimer isValid]) {
-        if (self.sportTracker != nil) {
-            [self.sportTracker exitBackground];
-        }
-    }
-    
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    
-    if (self.sportTracker != nil) {
-        [self.sportTracker enterBackground];
-    }
-    
-}
-
 - (void)trackerUpdate {
     
     if (self.sportTracker.distance/1000 != -1.0) {
