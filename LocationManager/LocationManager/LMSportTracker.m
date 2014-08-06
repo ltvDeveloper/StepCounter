@@ -96,6 +96,8 @@
         self.sportSession = [self recoverSession];
     }
 
+    NSLog(@"%i",self.fetchedResultsController.fetchedObjects.count);
+    
     return self;
 }
 
@@ -362,13 +364,14 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         [pathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
         NSData *pathData = [NSKeyedArchiver archivedDataWithRootObject:pathArray];
         
-        //Save data to the Core Data
+        //Save session's data to Core Data
         self.sportSession.kilometers = @(distance/1000.f);
         self.sportSession.calories = @(self.burnedCalories);
         self.sportSession.speed = @([self averageSpeed]);
         self.sportSession.time = @(seconds);
         self.sportSession.path = pathData;
         self.sportSession.activityInterval = @(self.activityInterval);
+        
         [self.managedObjectContext save:nil];
     }
     
@@ -468,7 +471,15 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
 
 - (Session *)recoverSession {
     
-    Session *recoveredSession = [self.fetchedResultsController.fetchedObjects objectAtIndex:0];
+    Session *recoveredSession = [self.fetchedResultsController.fetchedObjects firstObject];
+    
+    if (recoveredSession.endDate != nil) {
+        recoveredSession = [self.fetchedResultsController.fetchedObjects lastObject];
+    }
+    
+    for (Session *ss in self.fetchedResultsController.fetchedObjects) {
+        NSLog(@"%@",ss.endDate);
+    }
     
     // If last session have endDate, then creating new session
     if (recoveredSession.endDate != nil) {
@@ -476,6 +487,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         [self.managedObjectContext save:nil];
         
     } else { // If last session haven't endDate, then use last session
+        NSLog(@"1");
         distance += [recoveredSession.kilometers floatValue]*1000.f;
         seconds = [recoveredSession.time floatValue];
         self.burnedCalories = [recoveredSession.calories floatValue];

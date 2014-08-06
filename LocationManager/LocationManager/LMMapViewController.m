@@ -19,11 +19,15 @@
 @interface LMMapViewController () <GMSMapViewDelegate, NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) GMSMapView *mapView;
+@property (strong, nonatomic) GMSMutablePath *path;
+@property (strong, nonatomic) GMSPolyline *pathLine;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
+@property (strong, nonatomic) NSTimer *timer;
 
 @end
 
@@ -43,13 +47,15 @@
     
     [super viewDidLoad];
     
+    if (![_timer isValid]) {
+        _timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(onTimer) userInfo:nil repeats:YES];
+    }
     
     if (self.fetchedResultsController.fetchedObjects.count != 0) {
         Session *session = [[self.fetchedResultsController fetchedObjects]objectAtIndex:0];
         
         [self drawPathWithData:session.path];
         [self drawLogPoints:[session.logPoint allObjects]];
-        
     }
     
 }
@@ -57,9 +63,15 @@
 #pragma mark - private
 #pragma mark - Draw
 
+- (void)onTimer {
+    
+    self.fetchedResultsController = [self fetchedResultsController];
+    NSLog(@"%i",self.fetchedResultsController.fetchedObjects.count);
+}
+
 - (void)drawPathWithData:(NSData *)data {
     
-    GMSMutablePath *path = [[GMSMutablePath alloc]init];
+    self.path = [[GMSMutablePath alloc]init];
     NSMutableArray *pathArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     NSMutableArray *longitudes = [[NSMutableArray alloc]init];
     NSMutableArray *latitudes = [[NSMutableArray alloc]init];
@@ -77,23 +89,21 @@
         NSNumber *latitude = [latitudes objectAtIndex:j];
         NSNumber *longitude = [longitudes objectAtIndex:j];
         
-        [path addLatitude:[latitude floatValue] longitude:[longitude floatValue]];
+        [self.path addLatitude:[latitude floatValue] longitude:[longitude floatValue]];
     }
     
-    GMSPolyline *pathLine;
     GMSCameraPosition *camera;
     
     camera = [GMSCameraPosition cameraWithLatitude:self.currentLocation.coordinate.latitude longitude:self.currentLocation.coordinate.longitude zoom:15.0];
     self.mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     
-    pathLine = [GMSPolyline polylineWithPath:path];
-    pathLine.strokeColor = [UIColor greenColor];
-    pathLine.strokeWidth = 2.0;
-    pathLine.map = self.mapView;
+    self.pathLine = [GMSPolyline polylineWithPath:self.path];
+    self.pathLine.strokeColor = [UIColor greenColor];
+    self.pathLine.strokeWidth = 2.0;
+    self.pathLine.map = self.mapView;
     self.mapView.delegate = self;
     
     self.view = self.mapView;
-
     
 }
 
@@ -113,6 +123,7 @@
 - (void)viewDidDisappear:(BOOL)animated {
     
     self.mapView = nil;
+    [_timer invalidate];
 }
 - (void)didReceiveMemoryWarning
 {
