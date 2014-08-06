@@ -16,7 +16,7 @@
 #import <CoreData/CoreData.h>
 #import <GoogleMaps/GoogleMaps.h>
 
-@interface LMMapViewController () <GMSMapViewDelegate, NSFetchedResultsControllerDelegate>
+@interface LMMapViewController () <GMSMapViewDelegate>
 
 @property (strong, nonatomic) GMSMapView *mapView;
 @property (strong, nonatomic) GMSMutablePath *path;
@@ -29,7 +29,7 @@
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-@property (strong, nonatomic) NSTimer *timer;
+@property (strong, nonatomic) NSTimer *pathUpdateTimer;
 
 @end
 
@@ -49,8 +49,8 @@
     
     [super viewDidLoad];
     
-    if (![_timer isValid]) {
-        _timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(onTimer) userInfo:nil repeats:YES];
+    if (![self.pathUpdateTimer isValid]) {
+        self.pathUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(onPathUpdateTimer) userInfo:nil repeats:YES];
     }
     
     GMSCameraPosition *camera;
@@ -71,7 +71,7 @@
 #pragma mark - private
 #pragma mark - Draw
 
-- (void)onTimer {
+- (void)onPathUpdateTimer {
     
     NSManagedObjectContext *context = [[NSManagedObjectContext alloc]initWithConcurrencyType:NSMainQueueConcurrencyType];
     [context setPersistentStoreCoordinator:self.persistentStoreCoordinator];
@@ -131,7 +131,7 @@
 - (void)viewDidDisappear:(BOOL)animated {
     
     self.mapView = nil;
-    [_timer invalidate];
+    [self.pathUpdateTimer invalidate];
 }
 - (void)didReceiveMemoryWarning
 {
@@ -158,7 +158,6 @@
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
 	NSError *error = nil;
     

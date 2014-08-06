@@ -443,7 +443,7 @@
                                 </connections>
                             </button>
                             <view hidden="YES" clearsContextBeforeDrawing="NO" alpha="0.94999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xto-b5-Wlo">
-                                <rect key="frame" x="0.0" y="65" width="320" height="261"/>
+                                <rect key="frame" x="0.0" y="65" width="320" height="273"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oSu-aW-S6S">
@@ -546,6 +546,20 @@
                                         </attributedString>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zrf-Lm-Ymv">
+                                        <rect key="frame" x="9" y="233" width="114" height="23"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <attributedString key="attributedText">
+                                            <fragment content="Activity">
+                                                <attributes>
+                                                    <color key="NSColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <font key="NSFont" size="20" name="GillSans-Light"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                                </attributes>
+                                            </fragment>
+                                        </attributedString>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Wy-FU-txR">
                                         <rect key="frame" x="206" y="64" width="107" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -586,6 +600,16 @@
                                         </segments>
                                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </segmentedControl>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="nl7-PV-T4T">
+                                        <rect key="frame" x="132" y="231" width="159" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="Walking"/>
+                                            <segment title="Running"/>
+                                            <segment title="Cycling"/>
+                                        </segments>
+                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    </segmentedControl>
                                 </subviews>
                                 <color key="backgroundColor" red="0.56650788316557854" green="0.79655691652709892" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
@@ -610,7 +634,7 @@
                                 </connections>
                             </button>
                             <view hidden="YES" alpha="0.89999999999999991" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9t5-dG-gqT">
-                                <rect key="frame" x="0.0" y="327" width="320" height="156"/>
+                                <rect key="frame" x="0.0" y="338" width="320" height="156"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aT5-GT-giJ">
@@ -719,7 +743,7 @@
                             <constraint firstItem="S6P-Mn-nuS" firstAttribute="top" secondItem="GJ2-5W-QRQ" secondAttribute="bottom" constant="72" id="ipi-mi-EeC"/>
                             <constraint firstItem="L5Q-8O-hGh" firstAttribute="top" secondItem="S6P-Mn-nuS" secondAttribute="bottom" constant="18" id="jbW-aC-fcF"/>
                             <constraint firstItem="yMC-nC-XY0" firstAttribute="top" secondItem="RQI-AZ-7DH" secondAttribute="bottom" constant="23" id="jdy-hs-4XS"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Xto-b5-Wlo" secondAttribute="bottom" constant="242" id="jyl-2Y-R1o"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Xto-b5-Wlo" secondAttribute="bottom" constant="230" id="jyl-2Y-R1o"/>
                             <constraint firstItem="Xto-b5-Wlo" firstAttribute="trailing" secondItem="cq3-Es-6AQ" secondAttribute="trailing" id="k6g-us-yFy"/>
                             <constraint firstItem="mWy-Sd-ovz" firstAttribute="leading" secondItem="vdm-bp-6bj" secondAttribute="trailing" constant="45" id="lVU-vZ-50K"/>
                             <constraint firstItem="PRQ-sy-rFc" firstAttribute="top" secondItem="yMC-nC-XY0" secondAttribute="bottom" constant="21" id="lhZ-FL-vyz"/>
@@ -744,6 +768,7 @@
                     <navigationItem key="navigationItem" id="8U4-c0-UAJ"/>
                     <connections>
                         <outlet property="accCountLabel" destination="IK2-lM-QMv" id="XeG-HU-1rh"/>
+                        <outlet property="activityControl" destination="nl7-PV-T4T" id="TXj-Vp-FpH"/>
                         <outlet property="ageTextField" destination="VOB-TW-Gkp" id="f1W-EM-K5L"/>
                         <outlet property="agingFactorLabel" destination="rHI-NW-P78" id="ytC-0r-k2O"/>
                         <outlet property="biologicalAgeLabel" destination="SWT-Ke-1Dt" id="KbF-8g-8hG"/>

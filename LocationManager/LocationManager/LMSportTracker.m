@@ -11,6 +11,13 @@
 #import "LMAccelerometerFilter.h"
 
 #define kBurnedFatRunning 9
+#define kBurnedCaloriesWalkingMale 0.4f
+#define kBurnedCaloriesCyclingMale 0.5f
+#define kBurnedcaloriesRunningMale 1.f
+
+#define kBurnedCaloriesWalkingFemale 0.3f
+#define kBurnedCaloriesCyclingFemale 0.4f
+#define kBurnedcaloriesRunningFemale 0.8f
 
 
 @interface LMSportTracker () <CLLocationManagerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate>
@@ -131,7 +138,6 @@
 
 - (void)startTracker {
     
-    [self startMeasuringHeartRate];
     [self startMotion];
     
     }
@@ -152,20 +158,58 @@
 
 #pragma mark - Energy Consumption
 
-- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender {
+- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender activityType:(Activity)activity {
     
-    switch (gender) {
-        case Male:
-            if (speed > 0.f) {
-                self.burnedCalories += ((speed + 1.f) * weight)/3600.f;
+    switch (activity) {
+        
+        case Walking:
+            NSLog(@"WALKING");
+            switch (gender) {
+                case Male:
+                    if (speed > 0.f) {
+                        self.burnedCalories += ((speed + kBurnedCaloriesWalkingMale) * weight)/3600.f;
+                    }
+                    break;
+                case Female:
+                    if (speed > 0.f) {
+                        self.burnedCalories += ((speed + kBurnedCaloriesWalkingFemale) * weight)/3600.f;
+                    }
+                    break;
             }
             break;
-        case Female:
-            if (speed > 0.f) {
-                self.burnedCalories += ((speed + 0.8f) * weight)/3600.f;
+            
+        case Running:
+            NSLog(@"RUNNING");
+            switch (gender) {
+                case Male:
+                    if (speed > 0.f) {
+                        self.burnedCalories += ((speed + kBurnedcaloriesRunningMale) * weight)/3600.f;
+                    }
+                    break;
+                case Female:
+                    if (speed > 0.f) {
+                        self.burnedCalories += ((speed + kBurnedcaloriesRunningFemale) * weight)/3600.f;
+                    }
             }
+            break;
+            
+        case Cycling:
+            NSLog(@"CYCLING");
+            switch (gender) {
+                case Male:
+                    if (speed > 0.f) {
+                        self.burnedCalories += ((speed + kBurnedCaloriesCyclingMale) * weight)/3600.f;
+                    }
+                    break;
+                case Female:
+                    if (speed > 0.f) {
+                        self.burnedCalories += ((speed + kBurnedCaloriesCyclingFemale) * weight)/3600.f;
+                    }
+                    break;
+            }
+            break;
+
     }
-    
     return self.burnedCalories;
     
 }
@@ -523,6 +567,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     
+    //Measuring heart rate using camera
+    
     CVImageBufferRef cvImgRef = CMSampleBufferGetImageBuffer(sampleBuffer);
     CVPixelBufferLockBaseAddress(cvImgRef, 0);
     
@@ -552,8 +598,20 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     self.deltaValue = v-self.lastValue;
 
-    if (self.deltaValue > 0.f && self.lastDeltaValue < 0.f && r > 0.5f) {
-        ++self.heartRate;
+    if (r < 0.5f) {
+        UIAlertView *fingerAlert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Put your finger on camera" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [fingerAlert show];
+    } else {
+        if (![self.heartTimer isValid]) {
+            [self startMeasuringHeartRate];
+        }
+        if (self.deltaValue > 0.f && self.lastDeltaValue < 0.f) {
+            ++self.heartRate;
+        }
+    }
+    
+    if (![self.heartTimer isValid]) {
+        [self startMeasuringHeartRate];
     }
     
     self.lastValue = v;

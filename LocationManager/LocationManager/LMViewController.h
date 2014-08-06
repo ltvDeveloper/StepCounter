@@ -42,5 +42,6 @@
 @property (strong, nonatomic) IBOutlet UITextField *hipsTextField;
 
 @property (strong, nonatomic) IBOutlet UISegmentedControl *genderControl;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *activityControl;
 
 @end

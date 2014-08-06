@@ -63,9 +63,11 @@
         self.lapLabel.text = [NSString stringWithFormat:@"%li",(long)self.sportTracker.laps];
     }
     
-    self.burnedCaloriesLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex]];
+    self.burnedCaloriesLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex activityType:self.activityControl.selectedSegmentIndex]];
     self.consumptionWaterLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker waterConsumption:[self.weight floatValue]]];
-    self.fatLabel.text = [NSString stringWithFormat:@"%.2f",[self.sportTracker fatBurned:[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex]]];
+    self.fatLabel.text = [NSString stringWithFormat:@"%.2f",[self.sportTracker fatBurned:[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex activityType:self.activityControl.selectedSegmentIndex]]];
+    
+    NSLog(@"%i",self.activityControl.selectedSegmentIndex);
     
 }
 

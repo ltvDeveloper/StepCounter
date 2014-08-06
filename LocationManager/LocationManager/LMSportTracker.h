@@ -16,6 +16,13 @@ typedef NS_ENUM(NSUInteger, Gender)
     Female = 1
 };
 
+typedef NS_ENUM(NSUInteger, Activity)
+{
+    Walking = 0,
+    Running = 1,
+    Cycling = 2
+};
+
 @interface LMSportTracker : NSObject
 
 @property (nonatomic, readonly) NSInteger steps;
@@ -39,7 +46,7 @@ typedef NS_ENUM(NSUInteger, Gender)
 - (void)enterBackground;
 - (void)exitBackground;
 - (void)startMeasuringHeartRate;
-- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender;
+- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender activityType:(Activity)activity;
 - (CGFloat)waterConsumption:(CGFloat)weight;
 - (CGFloat)fatBurned:(CGFloat)calories;
 - (NSInteger)biologicalAge:(Gender)gender age:(NSInteger)age weight:(CGFloat)weight height:(CGFloat)height waistline:(CGFloat)waistline hips:(CGFloat)hips;
