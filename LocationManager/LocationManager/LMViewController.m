@@ -63,11 +63,9 @@
         self.lapLabel.text = [NSString stringWithFormat:@"%li",(long)self.sportTracker.laps];
     }
     
-    self.burnedCaloriesLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex activityType:self.activityControl.selectedSegmentIndex]];
+    self.burnedCaloriesLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex]];
     self.consumptionWaterLabel.text = [NSString stringWithFormat:@"%.1f",[self.sportTracker waterConsumption:[self.weight floatValue]]];
-    self.fatLabel.text = [NSString stringWithFormat:@"%.2f",[self.sportTracker fatBurned:[self.sportTracker caloriesBurned:[self.weight floatValue] gender:self.genderControl.selectedSegmentIndex activityType:self.activityControl.selectedSegmentIndex]]];
-    
-    NSLog(@"%i",self.activityControl.selectedSegmentIndex);
+    self.fatLabel.text = [NSString stringWithFormat:@"%.2f",[self.sportTracker fatBurned:[self.burnedCaloriesLabel.text floatValue]]];
     
 }
 
@@ -135,17 +133,12 @@
     self.fatLabel.text = @"0.00";
     self.biologicalAgeLabel.text = @"0";
     self.agingFactorLabel.text = @"0.0";
-    self.weightTextField.text = @"";
-    self.ageTextField.text = @"";
-    self.waistlineTextField.text = @"";
-    self.hipsTextField.text = @"";
-    self.heightTextField.text = @"";
-    
+
 }
 
 - (IBAction)onStartButton:(id)sender {
 
-    [self.sportTracker startTracker];
+    [self.sportTracker startTrackerWithActivityType:self.activityControl.selectedSegmentIndex];
     
     if (![self.trackerUpdateTimer isValid]) {
         self.trackerUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(trackerUpdate) userInfo:nil repeats:YES];

@@ -11,6 +11,7 @@
 #import "LMAccelerometerFilter.h"
 
 #define kBurnedFatRunning 9
+
 #define kBurnedCaloriesWalkingMale 0.4f
 #define kBurnedCaloriesCyclingMale 0.5f
 #define kBurnedcaloriesRunningMale 1.f
@@ -55,8 +56,11 @@
 @property (assign, nonatomic) CGFloat lastValue;
 
 @property (assign, nonatomic) BOOL isSprint;
+@property (assign, nonatomic) BOOL isStepsBased;
 
 @property (assign, nonatomic) NSTimeInterval activityInterval;
+
+@property (assign, nonatomic) Activity activity;
 
 @end
 
@@ -105,8 +109,6 @@
         self.sportSession = [self recoverSession];
     }
     
-    NSLog(@"%i",self.fetchedResultsController.fetchedObjects.count);
-    
     return self;
 }
 
@@ -136,17 +138,32 @@
 
 #pragma mark - Start, Stop and Reset Tracker
 
-- (void)startTracker {
+- (void)startTrackerWithActivityType:(Activity)activity {
+    
+    self.activity = activity;
+    
+    switch (activity) {
+        case Walking:
+            self.isStepsBased = YES;
+            break;
+        case Running:
+            self.isStepsBased = YES;
+            break;
+        case Cycling:
+            self.isStepsBased = NO;
+            break;
+    }
     
     [self startMotion];
     
     }
 
-
 - (void)stopTacker {
     
     [self closeSession];
     [self stopMotion];
+    self.oldLocation = nil;
+    currentLocation = nil;
     
 }
 
@@ -158,52 +175,49 @@
 
 #pragma mark - Energy Consumption
 
-- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender activityType:(Activity)activity {
+- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender {
     
-    switch (activity) {
+    switch (self.activity) {
         
         case Walking:
-            NSLog(@"WALKING");
             switch (gender) {
                 case Male:
                     if (speed > 0.f) {
-                        self.burnedCalories += ((speed + kBurnedCaloriesWalkingMale) * weight)/3600.f;
+                        self.burnedCalories += (((speed + kBurnedCaloriesWalkingMale) * weight)/3600.f) * 2.f;
                     }
                     break;
                 case Female:
                     if (speed > 0.f) {
-                        self.burnedCalories += ((speed + kBurnedCaloriesWalkingFemale) * weight)/3600.f;
+                        self.burnedCalories += (((speed + kBurnedCaloriesWalkingFemale) * weight)/3600.f) * 2.f;
                     }
                     break;
             }
             break;
             
         case Running:
-            NSLog(@"RUNNING");
             switch (gender) {
                 case Male:
                     if (speed > 0.f) {
-                        self.burnedCalories += ((speed + kBurnedcaloriesRunningMale) * weight)/3600.f;
+                        self.burnedCalories += (((speed + kBurnedcaloriesRunningMale) * weight)/3600.f) * 2.f;
                     }
                     break;
                 case Female:
                     if (speed > 0.f) {
-                        self.burnedCalories += ((speed + kBurnedcaloriesRunningFemale) * weight)/3600.f;
+                        self.burnedCalories += (((speed + kBurnedcaloriesRunningFemale) * weight)/3600.f) * 2.f;
                     }
             }
             break;
             
         case Cycling:
-            NSLog(@"CYCLING");
             switch (gender) {
                 case Male:
                     if (speed > 0.f) {
-                        self.burnedCalories += ((speed + kBurnedCaloriesCyclingMale) * weight)/3600.f;
+                        self.burnedCalories += (((speed + kBurnedCaloriesCyclingMale) * weight)/3600.f) * 2.f;
                     }
                     break;
                 case Female:
                     if (speed > 0.f) {
-                        self.burnedCalories += ((speed + kBurnedCaloriesCyclingFemale) * weight)/3600.f;
+                        self.burnedCalories += (((speed + kBurnedCaloriesCyclingFemale) * weight)/3600.f) * 2.f;
                     }
                     break;
             }
@@ -319,11 +333,13 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         self.sessionTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(onTimer) userInfo:nil repeats:YES];
     }
     
-    if ([self.motionManager isAccelerometerAvailable]) {
-        [self.motionManager startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMAccelerometerData *accelerometerData, NSError *error) {
-            [self acceleration:accelerometerData];
-            
+    if (self.isStepsBased) {
+        if ([self.motionManager isAccelerometerAvailable]) {
+            [self.motionManager startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMAccelerometerData *accelerometerData, NSError *error) {
+                [self acceleration:accelerometerData];
+                
             }];
+        }
     }
 
 }
@@ -388,7 +404,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         self.startDate = self.currentLocation.timestamp;
     }
     
-    self.oldLocation = currentLocation;
+    
     currentLocation = locations.lastObject;
     
     distance += ABS([currentLocation distanceFromLocation:self.oldLocation]);
@@ -420,6 +436,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         
         [self.managedObjectContext save:nil];
     }
+    
+    self.oldLocation = currentLocation;
     
 }
 
@@ -483,7 +501,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     if (self.sportSession != nil) {
         self.sportSession.path = nil;
         
-        // Deleting all log points in session
+        // Deleting all log points in current session
         
         for (LogPoint *logPoint in self.sportSession.logPoint) {
             [self.managedObjectContext deleteObject:logPoint];
@@ -523,17 +541,12 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         recoveredSession = [self.fetchedResultsController.fetchedObjects lastObject];
     }
     
-    for (Session *ss in self.fetchedResultsController.fetchedObjects) {
-        NSLog(@"%@",ss.endDate);
-    }
-    
     // If last session have endDate, then creating new session
     if (recoveredSession.endDate != nil) {
         recoveredSession = [NSEntityDescription insertNewObjectForEntityForName:@"Session" inManagedObjectContext:self.managedObjectContext];
         [self.managedObjectContext save:nil];
         
     } else { // If last session haven't endDate, then use last session
-        NSLog(@"!1");
         distance += [recoveredSession.kilometers floatValue]*1000.f;
         seconds += [recoveredSession.time floatValue];
         self.burnedCalories = [recoveredSession.calories floatValue];

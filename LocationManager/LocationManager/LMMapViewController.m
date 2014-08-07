@@ -60,7 +60,6 @@
     
     if (self.fetchedResultsController.fetchedObjects.count != 0) {
         Session *session = [[self.fetchedResultsController fetchedObjects]firstObject];
-        NSLog(@"%@",session.startDate);
         
         [self drawPathWithData:session.path];
         [self drawLogPoints:[session.logPoint allObjects]];

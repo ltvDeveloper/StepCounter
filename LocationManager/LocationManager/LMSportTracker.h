@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, Activity)
 
 //lifecycle
 - (id)initTrackerWithAccuracy:(CLLocationAccuracy)accuracy;
-- (void)startTracker;
+- (void)startTrackerWithActivityType:(Activity)activity;
 - (void)stopTacker;
 - (void)resetTracker;
 
@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, Activity)
 - (void)enterBackground;
 - (void)exitBackground;
 - (void)startMeasuringHeartRate;
-- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender activityType:(Activity)activity;
+- (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender;
 - (CGFloat)waterConsumption:(CGFloat)weight;
 - (CGFloat)fatBurned:(CGFloat)calories;
 - (NSInteger)biologicalAge:(Gender)gender age:(NSInteger)age weight:(CGFloat)weight height:(CGFloat)height waistline:(CGFloat)waistline hips:(CGFloat)hips;
