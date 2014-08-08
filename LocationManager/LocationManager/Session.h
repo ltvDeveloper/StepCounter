@@ -2,7 +2,7 @@
 //  Session.h
 //  LocationManager
 //
-//  Created by Developer on 8/4/14.
+//  Created by Developer on 8/8/14.
 //  Copyright (c) 2014 developer. All rights reserved.
 //
 
@@ -13,14 +13,17 @@
 
 @interface Session : NSManagedObject
 
+@property (nonatomic, retain) NSString * activity;
+@property (nonatomic, retain) NSNumber * activityInterval;
 @property (nonatomic, retain) NSNumber * calories;
 @property (nonatomic, retain) NSDate * endDate;
 @property (nonatomic, retain) NSNumber * kilometers;
-@property (nonatomic, retain) NSData * path;
+@property (nonatomic, retain) NSData * greenPath;
 @property (nonatomic, retain) NSNumber * speed;
 @property (nonatomic, retain) NSDate * startDate;
 @property (nonatomic, retain) NSNumber * time;
-@property (nonatomic, retain) NSNumber * activityInterval;
+@property (nonatomic, retain) NSNumber * isGray;
+@property (nonatomic, retain) NSData * grayPath;
 @property (nonatomic, retain) NSSet *logPoint;
 @end
 

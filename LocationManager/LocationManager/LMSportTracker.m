@@ -62,6 +62,11 @@
 
 @property (assign, nonatomic) Activity activity;
 
+@property (strong, nonatomic) GMSMutablePath *grayPath;
+@property (strong, nonatomic) GMSPolyline *grayPathLine;
+@property (strong, nonatomic) NSMutableArray *grayPathArray;
+@property (assign, nonatomic) BOOL isGray;
+
 @end
 
 @implementation LMSportTracker
@@ -93,6 +98,9 @@
     currentLocation = nil;
     originLocation = nil;
     self.startDate = nil;
+    
+    self.grayPath = [[GMSMutablePath alloc]init];
+    self.grayPathArray = [[NSMutableArray alloc]init];
     
     if (self.locationManager == nil) {
         self.locationManager = [[CLLocationManager alloc]init];
@@ -141,20 +149,27 @@
 - (void)startTrackerWithActivityType:(Activity)activity {
     
     self.activity = activity;
+    UIAlertView *activityAlert = [[UIAlertView alloc]initWithTitle:@"Alert!" message:@"Choose your activity!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
     
     switch (activity) {
         case Walking:
             self.isStepsBased = YES;
+            [self startMotion];
             break;
         case Running:
             self.isStepsBased = YES;
+            [self startMotion];
             break;
         case Cycling:
             self.isStepsBased = NO;
+            [self startMotion];
+            break;
+        default:
+            [activityAlert show];
             break;
     }
     
-    [self startMotion];
+    
     
     }
 
@@ -341,7 +356,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
             }];
         }
     }
-
+    
 }
 
 - (void)acceleration:(CMAccelerometerData *)accelerometerData {
@@ -380,7 +395,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         
         if ([self.speedArray count] > 0) {
             for (NSInteger i = 0 ; i <= [self.speedArray count]-1; ++i) {
-                sumSpeed += [[self.speedArray objectAtIndex:i] floatValue];
+                sumSpeed += [self.speedArray[i] floatValue];
             }
             avSpeed = sumSpeed/[self.speedArray count];
         }
@@ -404,10 +419,62 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         self.startDate = self.currentLocation.timestamp;
     }
     
-    
     currentLocation = locations.lastObject;
+    speed = currentLocation.speed;
     
-    distance += ABS([currentLocation distanceFromLocation:self.oldLocation]);
+    if (speed * 3.6f < 13.f) {
+       
+        distance += ABS([currentLocation distanceFromLocation:self.oldLocation]);
+        self.isGray = NO;
+        
+    } else self.isGray = YES;
+    
+    
+    if (self.sportSession) {
+        
+        //Creating and archiving path from NSMutableArray to NSData
+        NSMutableArray *greenPathArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.greenPath]];
+        [greenPathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
+        NSData *greenPathData = [NSKeyedArchiver archivedDataWithRootObject:greenPathArray];
+        
+        //Save session's data to Core Data
+        self.sportSession.kilometers = @(distance/1000.f);
+        self.sportSession.calories = @(self.burnedCalories);
+        self.sportSession.speed = @([self averageSpeed]);
+        self.sportSession.time = @(seconds);
+        self.sportSession.greenPath = greenPathData;
+        self.sportSession.activityInterval = @(self.activityInterval);
+        
+        switch (self.activity) {
+            case Walking:
+                self.sportSession.activity = @"Walking";
+                break;
+            case Running:
+                self.sportSession.activity = @"Runing";
+                break;
+            case Cycling:
+                self.sportSession.activity = @"Cycling";
+                break;
+        }
+        
+        [self.managedObjectContext save:nil];
+    }
+
+    
+    if (self.isGray) {
+        
+        [self.grayPathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
+        
+    } else if (self.grayPathArray.count != 0) {
+        
+        NSMutableArray *grayArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.grayPath]];
+        [grayArray addObject:@[self.grayPathArray]];
+        
+        self.sportSession.grayPath = [NSKeyedArchiver archivedDataWithRootObject:grayArray];
+        [self.managedObjectContext save:nil];
+        
+        [self.grayPathArray removeAllObjects];
+    }
     
     if (distance > 100.f) {
         if (originLocation.coordinate.longitude == currentLocation.coordinate.longitude && originLocation.coordinate.latitude == currentLocation.coordinate.latitude) {
@@ -417,24 +484,6 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     if (speed > 0.f) {
         [self handlingSprint];
-    }
-    
-    if (self.sportSession) {
-        
-        //Creating and archiving path from NSMutableArray to NSData
-        NSMutableArray *pathArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.path]];
-        [pathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
-        NSData *pathData = [NSKeyedArchiver archivedDataWithRootObject:pathArray];
-        
-        //Save session's data to Core Data
-        self.sportSession.kilometers = @(distance/1000.f);
-        self.sportSession.calories = @(self.burnedCalories);
-        self.sportSession.speed = @([self averageSpeed]);
-        self.sportSession.time = @(seconds);
-        self.sportSession.path = pathData;
-        self.sportSession.activityInterval = @(self.activityInterval);
-        
-        [self.managedObjectContext save:nil];
     }
     
     self.oldLocation = currentLocation;
@@ -499,7 +548,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
 - (void)cleanSession {
     
     if (self.sportSession != nil) {
-        self.sportSession.path = nil;
+        self.sportSession.greenPath = nil;
+        self.sportSession.grayPath = nil;
         
         // Deleting all log points in current session
         
@@ -530,6 +580,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     self.heartRate = 0;
     
     [self.sprintTimer invalidate];
+    [self.grayPathArray removeAllObjects];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 

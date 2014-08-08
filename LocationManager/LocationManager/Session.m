@@ -2,7 +2,7 @@
 //  Session.m
 //  LocationManager
 //
-//  Created by Developer on 8/4/14.
+//  Created by Developer on 8/8/14.
 //  Copyright (c) 2014 developer. All rights reserved.
 //
 
@@ -12,14 +12,17 @@
 
 @implementation Session
 
+@dynamic activity;
+@dynamic activityInterval;
 @dynamic calories;
 @dynamic endDate;
 @dynamic kilometers;
-@dynamic path;
+@dynamic greenPath;
 @dynamic speed;
 @dynamic startDate;
 @dynamic time;
-@dynamic activityInterval;
+@dynamic isGray;
+@dynamic grayPath;
 @dynamic logPoint;
 
 @end

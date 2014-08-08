@@ -8,11 +8,14 @@
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="logPoint" inverseEntity="Session" syncable="YES"/>
     </entity>
     <entity name="Session" representedClassName="Session" syncable="YES">
+        <attribute name="activity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="activityInterval" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="calories" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="grayPath" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="greenPath" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="isGray" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="kilometers" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="path" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="speed" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="time" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -20,6 +23,6 @@
     </entity>
     <elements>
         <element name="LogPoint" positionX="-5132" positionY="-1413" width="128" height="118"/>
-        <element name="Session" positionX="-5483" positionY="-1465" width="128" height="178"/>
+        <element name="Session" positionX="-5483" positionY="-1465" width="128" height="223"/>
     </elements>
 </model>
