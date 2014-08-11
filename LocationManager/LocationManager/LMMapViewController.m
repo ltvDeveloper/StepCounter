@@ -65,7 +65,7 @@
         Session *session = [[self.fetchedResultsController fetchedObjects]firstObject];
         [self drawPathWithData:session.greenPath];
         [self drawGrayPathWithData:session.grayPath];
-    [self drawLogPoints:[session.logPoint allObjects]];
+        [self drawLogPoints:[session.logPoint allObjects]];
     }
     
     self.mapView.delegate = self;
@@ -84,7 +84,6 @@
     [request setEntity:[NSEntityDescription entityForName:@"Session" inManagedObjectContext:context]];
     NSArray *res = [context executeFetchRequest:request error:nil];
     Session *ss = [res lastObject];
-    
     
     [self drawPathWithData:ss.greenPath];
     [self drawGrayPathWithData:ss.grayPath];
@@ -152,7 +151,7 @@
         grayPathLine.strokeWidth = 2.0;
         grayPathLine.map = self.mapView;
         
-}
+    }
 }
 
 - (void)drawLogPoints:(NSArray *)logPoints {
@@ -173,6 +172,7 @@
     self.mapView = nil;
     [self.pathUpdateTimer invalidate];
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

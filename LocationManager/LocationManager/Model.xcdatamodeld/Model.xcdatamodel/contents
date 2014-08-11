@@ -14,7 +14,6 @@
         <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="grayPath" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="greenPath" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="isGray" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="kilometers" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="speed" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -23,6 +22,6 @@
     </entity>
     <elements>
         <element name="LogPoint" positionX="-5132" positionY="-1413" width="128" height="118"/>
-        <element name="Session" positionX="-5483" positionY="-1465" width="128" height="223"/>
+        <element name="Session" positionX="-5483" positionY="-1465" width="128" height="208"/>
     </elements>
 </model>

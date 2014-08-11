@@ -43,6 +43,7 @@
 @property (strong, nonatomic) NSTimer *sprintTimer;
 
 @property (strong, nonatomic) NSMutableArray *speedArray;
+@property (strong, nonatomic) NSMutableArray *grayPathArray;
 
 @property (assign, nonatomic) NSInteger heartRate;
 @property (assign, nonatomic) NSInteger sprintTime;
@@ -57,15 +58,12 @@
 
 @property (assign, nonatomic) BOOL isSprint;
 @property (assign, nonatomic) BOOL isStepsBased;
+@property (assign, nonatomic) BOOL isGray;
 
 @property (assign, nonatomic) NSTimeInterval activityInterval;
 
 @property (assign, nonatomic) Activity activity;
 
-@property (strong, nonatomic) GMSMutablePath *grayPath;
-@property (strong, nonatomic) GMSPolyline *grayPathLine;
-@property (strong, nonatomic) NSMutableArray *grayPathArray;
-@property (assign, nonatomic) BOOL isGray;
 
 @end
 
@@ -98,8 +96,7 @@
     currentLocation = nil;
     originLocation = nil;
     self.startDate = nil;
-    
-    self.grayPath = [[GMSMutablePath alloc]init];
+
     self.grayPathArray = [[NSMutableArray alloc]init];
     
     if (self.locationManager == nil) {
@@ -138,7 +135,6 @@
 
 - (void)exitBackground {
     
-    
     if ([CLLocationManager deferredLocationUpdatesAvailable]) {
         [self.locationManager disallowDeferredLocationUpdates];
     }
@@ -149,7 +145,7 @@
 - (void)startTrackerWithActivityType:(Activity)activity {
     
     self.activity = activity;
-    UIAlertView *activityAlert = [[UIAlertView alloc]initWithTitle:@"Alert!" message:@"Choose your activity!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    UIAlertView *activityAlert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Choose your activity!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
     
     switch (activity) {
         case Walking:
@@ -169,16 +165,12 @@
             break;
     }
     
-    
-    
-    }
+}
 
 - (void)stopTacker {
     
     [self closeSession];
     [self stopMotion];
-    self.oldLocation = nil;
-    currentLocation = nil;
     
 }
 
@@ -378,6 +370,9 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     [self.sessionTimer invalidate];
     [self.sprintTimer invalidate];
     
+    self.oldLocation = nil;
+    currentLocation = nil;
+    
     [UIDevice currentDevice].proximityMonitoringEnabled = NO;
 }
 
@@ -422,13 +417,12 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     currentLocation = locations.lastObject;
     speed = currentLocation.speed;
     
-    if (speed * 3.6f < 13.f) {
+    if (speed * 3.6f < 30.f) {
        
         distance += ABS([currentLocation distanceFromLocation:self.oldLocation]);
         self.isGray = NO;
         
     } else self.isGray = YES;
-    
     
     if (self.sportSession) {
         
@@ -459,7 +453,6 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         
         [self.managedObjectContext save:nil];
     }
-
     
     if (self.isGray) {
         
