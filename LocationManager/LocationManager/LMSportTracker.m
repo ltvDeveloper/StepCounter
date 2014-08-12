@@ -55,6 +55,7 @@
 @property (assign, nonatomic) CGFloat deltaValue;
 @property (assign, nonatomic) CGFloat lastDeltaValue;
 @property (assign, nonatomic) CGFloat lastValue;
+@property (assign, nonatomic) CGFloat sprintThreshold;
 
 @property (assign, nonatomic) BOOL isSprint;
 @property (assign, nonatomic) BOOL isStepsBased;
@@ -184,51 +185,53 @@
 
 - (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender {
     
-    switch (self.activity) {
-        
-        case Walking:
-            switch (gender) {
-                case Male:
-                    if (speed > 0.f) {
-                        self.burnedCalories += (((speed + kBurnedCaloriesWalkingMale) * weight)/3600.f) * 2.f;
-                    }
-                    break;
-                case Female:
-                    if (speed > 0.f) {
-                        self.burnedCalories += (((speed + kBurnedCaloriesWalkingFemale) * weight)/3600.f) * 2.f;
-                    }
-                    break;
-            }
-            break;
-            
-        case Running:
-            switch (gender) {
-                case Male:
-                    if (speed > 0.f) {
-                        self.burnedCalories += (((speed + kBurnedcaloriesRunningMale) * weight)/3600.f) * 2.f;
-                    }
-                    break;
-                case Female:
-                    if (speed > 0.f) {
-                        self.burnedCalories += (((speed + kBurnedcaloriesRunningFemale) * weight)/3600.f) * 2.f;
-                    }
-            }
-            break;
-            
-        case Cycling:
-            switch (gender) {
-                case Male:
-                    if (speed > 0.f) {
-                        self.burnedCalories += (((speed + kBurnedCaloriesCyclingMale) * weight)/3600.f) * 2.f;
-                    }
-                    break;
-                case Female:
-                    if (speed > 0.f) {
-                        self.burnedCalories += (((speed + kBurnedCaloriesCyclingFemale) * weight)/3600.f) * 2.f;
-                    }
-                    break;
-            }
-            break;
+    if (!self.isGray) {
+        switch (self.activity) {
+                
+            case Walking:
+                switch (gender) {
+                    case Male:
+                        if (speed > 0.f) {
+                            self.burnedCalories += (((speed + kBurnedCaloriesWalkingMale) * weight)/3600.f) * 2.f;
+                        }
+                        break;
+                    case Female:
+                        if (speed > 0.f) {
+                            self.burnedCalories += (((speed + kBurnedCaloriesWalkingFemale) * weight)/3600.f) * 2.f;
+                        }
+                        break;
+                }
+                break;
+                
+            case Running:
+                switch (gender) {
+                    case Male:
+                        if (speed > 0.f) {
+                            self.burnedCalories += (((speed + kBurnedcaloriesRunningMale) * weight)/3600.f) * 2.f;
+                        }
+                        break;
+                    case Female:
+                        if (speed > 0.f) {
+                            self.burnedCalories += (((speed + kBurnedcaloriesRunningFemale) * weight)/3600.f) * 2.f;
+                        }
+                }
+                break;
+                
+            case Cycling:
+                switch (gender) {
+                    case Male:
+                        if (speed > 0.f) {
+                            self.burnedCalories += (((speed + kBurnedCaloriesCyclingMale) * weight)/3600.f) * 2.f;
+                        }
+                        break;
+                    case Female:
+                        if (speed > 0.f) {
+                            self.burnedCalories += (((speed + kBurnedCaloriesCyclingFemale) * weight)/3600.f) * 2.f;
+                        }
+                        break;
+                }
+                break;
+        }
 
     }
     return self.burnedCalories;
@@ -249,12 +252,14 @@
 
 - (CGFloat)waterConsumption:(CGFloat)weight {
     
-    if (speed != 0.f) {
-        self.water +=  ((weight/100.f)/3600.f) * 1000.f;
-        
-        return self.water;
+    if (!self.isGray) {
+        if (speed != 0.f) {
+            self.water +=  ((weight/100.f)/3600.f) * 1000.f;
+            
+            return self.water;
+        }
+
     }
-    
     return 0;
 }
 
@@ -378,8 +383,6 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
 
 - (CGFloat)averageSpeed {
     
-    //Calculating average speed by creating speed array and dividing it into count of array elements
-    
     CGFloat sumSpeed = 0.f;
     CGFloat avSpeed = 0.f;
     
@@ -396,15 +399,12 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         }
         
 }
-    
     return avSpeed;
 }
 
 #pragma mark - Location Manager Delegate
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    
-    self.motionManager.showsDeviceMovementDisplay = YES;
     
     if (originLocation == nil) {
         originLocation = locations.lastObject;
@@ -475,7 +475,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         }
     }
     
-    if (speed > 0.f) {
+    if (speed > 0.f && distance > 100.f) {
         [self handlingSprint];
     }
     
@@ -489,15 +489,29 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     ++self.sprintTime;
     self.sumSprintSpeed += speed * 3.6f;
+    NSLog(@"%i",self.sprintTime);
 }
 
 - (void)handlingSprint {
     
     static CGFloat sprintSpeed = 0.f;
     
+    switch (self.activity) {
+        case Running:
+            self.sprintThreshold = 3.f;
+            break;
+        case Cycling:
+            self.sprintThreshold = 5.f;
+            break;
+        case Walking:
+            self.sprintThreshold = 2.f;
+            break;
+
+    }
+    
     // If the current speed is greater than previous, then sprintTimer is firing
     if (![self.sprintTimer isValid] && self.seconds > 5) {
-        if (speed * 3.6f - self.lastSpeed * 3.6f > 3.f) {
+        if (speed * 3.6f - self.lastSpeed * 3.6f > self.sprintThreshold) {
             self.sprintTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(onSprintTimer) userInfo:nil repeats:YES];
             self.isSprint = YES;
             sprintSpeed = speed * 3.6f;

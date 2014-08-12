@@ -115,7 +115,7 @@
         
     self.greenPathLine = [GMSPolyline polylineWithPath:self.greenPath];
     self.greenPathLine.strokeColor = [UIColor greenColor];
-    self.greenPathLine.strokeWidth = 2.0;
+    self.greenPathLine.strokeWidth = 3.0;
     self.greenPathLine.map = self.mapView;
 
 }
@@ -148,7 +148,7 @@
         
         grayPathLine = [GMSPolyline polylineWithPath:self.grayPath];
         grayPathLine.strokeColor = [UIColor grayColor];
-        grayPathLine.strokeWidth = 2.0;
+        grayPathLine.strokeWidth = 3.2;
         grayPathLine.map = self.mapView;
         
     }
