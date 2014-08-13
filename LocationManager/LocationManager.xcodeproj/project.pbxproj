@@ -24,7 +24,7 @@
 		8B568E571951AA2B00D5EC48 /* LocationManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B568E561951AA2B00D5EC48 /* LocationManagerTests.m */; };
 		8B568E611951AA3800D5EC48 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B568E601951AA3800D5EC48 /* CoreLocation.framework */; };
 		8B568E631951C4F900D5EC48 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B568E621951C4F900D5EC48 /* CoreMotion.framework */; };
-		8BA453C31998F7AA00671923 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BA453C21998F7AA00671923 /* Session.m */; };
+		8B9D5468199B7FC400851D63 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B9D5467199B7FC400851D63 /* Session.m */; };
 		8BA6B397197407E5000A8133 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8BA6B395197407E5000A8133 /* Model.xcdatamodeld */; };
 		8BA6B39D19740C94000A8133 /* LogPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BA6B39C19740C94000A8133 /* LogPoint.m */; };
 		8BA783BE195C069100C805D6 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BA783BD195C069100C805D6 /* GoogleMaps.framework */; };
@@ -77,8 +77,8 @@
 		8B568E561951AA2B00D5EC48 /* LocationManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationManagerTests.m; sourceTree = "<group>"; };
 		8B568E601951AA3800D5EC48 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		8B568E621951C4F900D5EC48 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		8BA453C11998F7AA00671923 /* Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
-		8BA453C21998F7AA00671923 /* Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
+		8B9D5466199B7FC400851D63 /* Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
+		8B9D5467199B7FC400851D63 /* Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
 		8BA6B396197407E5000A8133 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		8BA6B39B19740C94000A8133 /* LogPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogPoint.h; sourceTree = "<group>"; };
 		8BA6B39C19740C94000A8133 /* LogPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogPoint.m; sourceTree = "<group>"; };
@@ -200,8 +200,8 @@
 				8BA7843C195C19C500C805D6 /* LMMapViewController.m */,
 				8BA6B39B19740C94000A8133 /* LogPoint.h */,
 				8BA6B39C19740C94000A8133 /* LogPoint.m */,
-				8BA453C11998F7AA00671923 /* Session.h */,
-				8BA453C21998F7AA00671923 /* Session.m */,
+				8B9D5466199B7FC400851D63 /* Session.h */,
+				8B9D5467199B7FC400851D63 /* Session.m */,
 				8BA6B395197407E5000A8133 /* Model.xcdatamodeld */,
 				8B568E431951AA2B00D5EC48 /* Images.xcassets */,
 				8B568E2F1951AA2B00D5EC48 /* Supporting Files */,
@@ -345,7 +345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BA453C31998F7AA00671923 /* Session.m in Sources */,
+				8B9D5468199B7FC400851D63 /* Session.m in Sources */,
 				8BD8A9DF195B04DC00A87EB6 /* LMSportTracker.m in Sources */,
 				8B568E351951AA2B00D5EC48 /* main.m in Sources */,
 				8B568E391951AA2B00D5EC48 /* LMAppDelegate.m in Sources */,

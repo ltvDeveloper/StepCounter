@@ -546,20 +546,6 @@
                                         </attributedString>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zrf-Lm-Ymv">
-                                        <rect key="frame" x="9" y="233" width="114" height="23"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <attributedString key="attributedText">
-                                            <fragment content="Activity">
-                                                <attributes>
-                                                    <color key="NSColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <font key="NSFont" size="20" name="GillSans-Light"/>
-                                                    <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                </attributes>
-                                            </fragment>
-                                        </attributedString>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Wy-FU-txR">
                                         <rect key="frame" x="206" y="64" width="107" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -597,16 +583,6 @@
                                         <segments>
                                             <segment title="Male"/>
                                             <segment title="Female"/>
-                                        </segments>
-                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    </segmentedControl>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="nl7-PV-T4T">
-                                        <rect key="frame" x="132" y="231" width="159" height="29"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <segments>
-                                            <segment title="Walking"/>
-                                            <segment title="Running"/>
-                                            <segment title="Cycling"/>
                                         </segments>
                                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </segmentedControl>
@@ -768,7 +744,6 @@
                     <navigationItem key="navigationItem" id="8U4-c0-UAJ"/>
                     <connections>
                         <outlet property="accCountLabel" destination="IK2-lM-QMv" id="XeG-HU-1rh"/>
-                        <outlet property="activityControl" destination="nl7-PV-T4T" id="TXj-Vp-FpH"/>
                         <outlet property="ageTextField" destination="VOB-TW-Gkp" id="f1W-EM-K5L"/>
                         <outlet property="agingFactorLabel" destination="rHI-NW-P78" id="ytC-0r-k2O"/>
                         <outlet property="biologicalAgeLabel" destination="SWT-Ke-1Dt" id="KbF-8g-8hG"/>

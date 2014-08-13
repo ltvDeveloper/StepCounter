@@ -19,8 +19,8 @@
 @interface LMMapViewController () <GMSMapViewDelegate>
 
 @property (strong, nonatomic) GMSMapView *mapView;
-@property (strong, nonatomic) GMSMutablePath *greenPath;
-@property (strong, nonatomic) GMSMutablePath *grayPath;
+@property (strong, nonatomic) GMSMutablePath *sessionPath;
+@property (strong, nonatomic) GMSMutablePath *drivingPath;
 
 @property (strong, nonatomic) GMSPolyline *greenPathLine;
 @property (strong, nonatomic) GMSPolyline *grayPathLine;
@@ -63,8 +63,8 @@
     
     if (self.fetchedResultsController.fetchedObjects.count != 0) {
         Session *session = [[self.fetchedResultsController fetchedObjects]firstObject];
-        [self drawPathWithData:session.greenPath];
-        [self drawGrayPathWithData:session.grayPath];
+        [self drawPathWithData:session.sessionPath];
+        [self drawDrivingPathWithData:session.sessionPath];
         [self drawLogPoints:[session.logPoint allObjects]];
     }
     
@@ -85,14 +85,14 @@
     NSArray *res = [context executeFetchRequest:request error:nil];
     Session *ss = [res lastObject];
     
-    [self drawPathWithData:ss.greenPath];
-    [self drawGrayPathWithData:ss.grayPath];
+    [self drawPathWithData:ss.sessionPath];
+    [self drawDrivingPathWithData:ss.drivingPath];
     
 }
 
 - (void)drawPathWithData:(NSData *)data  {
     
-    self.greenPath = [[GMSMutablePath alloc]init];
+    self.sessionPath = [[GMSMutablePath alloc]init];
     NSMutableArray *pathArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     NSMutableArray *longitudes = [[NSMutableArray alloc]init];
     NSMutableArray *latitudes = [[NSMutableArray alloc]init];
@@ -110,21 +110,21 @@
         NSNumber *latitude = latitudes[j];
         NSNumber *longitude = longitudes[j];
             
-        [self.greenPath addLatitude:[latitude floatValue] longitude:[longitude floatValue]];
+        [self.sessionPath addLatitude:[latitude floatValue] longitude:[longitude floatValue]];
     }
         
-    self.greenPathLine = [GMSPolyline polylineWithPath:self.greenPath];
+    self.greenPathLine = [GMSPolyline polylineWithPath:self.sessionPath];
     self.greenPathLine.strokeColor = [UIColor greenColor];
     self.greenPathLine.strokeWidth = 3.0;
     self.greenPathLine.map = self.mapView;
 
 }
 
-- (void)drawGrayPathWithData:(NSData *)data {
+- (void)drawDrivingPathWithData:(NSData *)data {
     
     for (NSMutableArray *gArray in [NSKeyedUnarchiver unarchiveObjectWithData:data]) {
         
-        self.grayPath = [[GMSMutablePath alloc]init];
+        self.drivingPath = [[GMSMutablePath alloc]init];
         NSMutableArray *longitudes = [[NSMutableArray alloc]init];
         NSMutableArray *latitudes = [[NSMutableArray alloc]init];
         
@@ -141,12 +141,12 @@
             NSNumber *latitude = latitudes[j];
             NSNumber *longitude = longitudes[j];
             
-            [self.grayPath addLatitude:[latitude floatValue] longitude:[longitude floatValue]];
+            [self.drivingPath addLatitude:[latitude floatValue] longitude:[longitude floatValue]];
         }
         
-        GMSPolyline *grayPathLine = [GMSPolyline polylineWithPath:self.grayPath];
+        GMSPolyline *grayPathLine = [GMSPolyline polylineWithPath:self.drivingPath];
         
-        grayPathLine = [GMSPolyline polylineWithPath:self.grayPath];
+        grayPathLine = [GMSPolyline polylineWithPath:self.drivingPath];
         grayPathLine.strokeColor = [UIColor grayColor];
         grayPathLine.strokeWidth = 3.2;
         grayPathLine.map = self.mapView;

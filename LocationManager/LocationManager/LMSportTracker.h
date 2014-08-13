@@ -20,7 +20,9 @@ typedef NS_ENUM(NSUInteger, Activity)
 {
     Walking = 0,
     Running = 1,
-    Cycling = 2
+    Cycling = 2,
+    Driving = 3,
+    Rest = 4
 };
 
 @interface LMSportTracker : NSObject
@@ -38,7 +40,7 @@ typedef NS_ENUM(NSUInteger, Activity)
 
 //lifecycle
 - (id)initTrackerWithAccuracy:(CLLocationAccuracy)accuracy;
-- (void)startTrackerWithActivityType:(Activity)activity;
+- (void)startTracker;
 - (void)stopTacker;
 - (void)resetTracker;
 

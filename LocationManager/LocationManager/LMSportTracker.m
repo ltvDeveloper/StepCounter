@@ -2,7 +2,6 @@
 
 #import <CoreMotion/CoreMotion.h>
 #import <CoreData/CoreData.h>
-#import <GoogleMaps/GoogleMaps.h>
 #import <AVFoundation/AVFoundation.h>
 
 #import "LMSportTracker.h"
@@ -43,7 +42,7 @@
 @property (strong, nonatomic) NSTimer *sprintTimer;
 
 @property (strong, nonatomic) NSMutableArray *speedArray;
-@property (strong, nonatomic) NSMutableArray *grayPathArray;
+@property (strong, nonatomic) NSMutableArray *drivingPathArray;
 
 @property (assign, nonatomic) NSInteger heartRate;
 @property (assign, nonatomic) NSInteger sprintTime;
@@ -59,7 +58,6 @@
 
 @property (assign, nonatomic) BOOL isSprint;
 @property (assign, nonatomic) BOOL isStepsBased;
-@property (assign, nonatomic) BOOL isGray;
 
 @property (assign, nonatomic) NSTimeInterval activityInterval;
 
@@ -98,7 +96,7 @@
     originLocation = nil;
     self.startDate = nil;
 
-    self.grayPathArray = [[NSMutableArray alloc]init];
+    self.drivingPathArray = [[NSMutableArray alloc]init];
     
     if (self.locationManager == nil) {
         self.locationManager = [[CLLocationManager alloc]init];
@@ -143,28 +141,9 @@
 
 #pragma mark - Start, Stop and Reset Tracker
 
-- (void)startTrackerWithActivityType:(Activity)activity {
+- (void)startTracker {
     
-    self.activity = activity;
-    UIAlertView *activityAlert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Choose your activity!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-    
-    switch (activity) {
-        case Walking:
-            self.isStepsBased = YES;
-            [self startMotion];
-            break;
-        case Running:
-            self.isStepsBased = YES;
-            [self startMotion];
-            break;
-        case Cycling:
-            self.isStepsBased = NO;
-            [self startMotion];
-            break;
-        default:
-            [activityAlert show];
-            break;
-    }
+    [self startMotion];
     
 }
 
@@ -185,55 +164,57 @@
 
 - (CGFloat)caloriesBurned:(CGFloat)weight gender:(Gender)gender {
     
-    if (!self.isGray) {
-        switch (self.activity) {
+    switch (self.activity) {
                 
-            case Walking:
-                switch (gender) {
-                    case Male:
-                        if (speed > 0.f) {
-                            self.burnedCalories += (((speed + kBurnedCaloriesWalkingMale) * weight)/3600.f) * 2.f;
-                        }
-                        break;
-                    case Female:
-                        if (speed > 0.f) {
-                            self.burnedCalories += (((speed + kBurnedCaloriesWalkingFemale) * weight)/3600.f) * 2.f;
-                        }
-                        break;
-                }
-                break;
+        case Walking:
+            switch (gender) {
+                case Male:
+                    if (speed > 0.f) {
+                        self.burnedCalories += (((speed + kBurnedCaloriesWalkingMale) * weight)/3600.f) * 2.f;
+                    }
+                    break;
+                case Female:
+                    if (speed > 0.f) {
+                        self.burnedCalories += (((speed + kBurnedCaloriesWalkingFemale) * weight)/3600.f) * 2.f;
+                    }
+                    break;
+            }
+            break;
                 
-            case Running:
-                switch (gender) {
-                    case Male:
-                        if (speed > 0.f) {
-                            self.burnedCalories += (((speed + kBurnedcaloriesRunningMale) * weight)/3600.f) * 2.f;
-                        }
-                        break;
-                    case Female:
-                        if (speed > 0.f) {
-                            self.burnedCalories += (((speed + kBurnedcaloriesRunningFemale) * weight)/3600.f) * 2.f;
-                        }
-                }
-                break;
+        case Running:
+            switch (gender) {
+                case Male:
+                    if (speed > 0.f) {
+                        self.burnedCalories += (((speed + kBurnedcaloriesRunningMale) * weight)/3600.f) * 2.f;
+                    }
+                    break;
+                case Female:
+                    if (speed > 0.f) {
+                        self.burnedCalories += (((speed + kBurnedcaloriesRunningFemale) * weight)/3600.f) * 2.f;
+                    }
+            }
+            break;
                 
-            case Cycling:
-                switch (gender) {
-                    case Male:
-                        if (speed > 0.f) {
-                            self.burnedCalories += (((speed + kBurnedCaloriesCyclingMale) * weight)/3600.f) * 2.f;
-                        }
-                        break;
-                    case Female:
-                        if (speed > 0.f) {
-                            self.burnedCalories += (((speed + kBurnedCaloriesCyclingFemale) * weight)/3600.f) * 2.f;
-                        }
-                        break;
-                }
-                break;
-        }
-
+        case Cycling:
+            switch (gender) {
+                case Male:
+                    if (speed > 0.f) {
+                        self.burnedCalories += (((speed + kBurnedCaloriesCyclingMale) * weight)/3600.f) * 2.f;
+                    }
+                    break;
+                case Female:
+                    if (speed > 0.f) {
+                        self.burnedCalories += (((speed + kBurnedCaloriesCyclingFemale) * weight)/3600.f) * 2.f;
+                    }
+                    break;
+            }
+            break;
+                
+        case Driving:
+            self.burnedCalories += 0;
+            break;
     }
+
     return self.burnedCalories;
     
 }
@@ -252,15 +233,13 @@
 
 - (CGFloat)waterConsumption:(CGFloat)weight {
     
-    if (!self.isGray) {
-        if (speed != 0.f) {
-            self.water +=  ((weight/100.f)/3600.f) * 1000.f;
-            
-            return self.water;
-        }
+    if (speed != 0.f && self.activity != 3) {
+        
+        self.water +=  ((weight/100.f)/3600.f) * 1000.f;
 
     }
-    return 0;
+
+    return self.water;
 }
 
 #pragma mark - Biological Age & Aging Factor
@@ -402,6 +381,42 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     return avSpeed;
 }
 
+- (void)activityCheck {
+
+    if (self.speedArray.count > 5) {
+        CGFloat lastElementsAvSpeed = 0.f;
+        for (NSInteger i = self.speedArray.count - 1; i > self.speedArray.count - 6; --i) {
+            lastElementsAvSpeed += [self.speedArray[i] floatValue];
+            if (lastElementsAvSpeed/5.f > 1.f && lastElementsAvSpeed/5.f < 8.f) {
+                self.activity = 0;
+                self.sportSession.activity = @"Walking";
+                self.isStepsBased = YES;
+            } else if (lastElementsAvSpeed/5.f > 8.f && lastElementsAvSpeed/5.f < 16.f) {
+                self.activity = 1;
+                self.sportSession.activity = @"Running";
+                self.isStepsBased = YES;
+            } else if (lastElementsAvSpeed/5.f > 16.f && lastElementsAvSpeed/5.f < 30.f) {
+                self.activity = 2;
+                self.sportSession.activity = @"Cycling";
+                self.isStepsBased = NO;
+            } else if (lastElementsAvSpeed/5.f > 30.f) {
+                self.activity = 3;
+                self.sportSession.activity = @"Driving";
+                self.isStepsBased = NO;
+            }
+        }
+    }
+    
+    if (self.speed == 0.f) {
+        self.activity = 4;
+        self.sportSession.activity = @"Rest";
+        self.isStepsBased = NO;
+    }
+    
+    [self.managedObjectContext save:nil];
+
+}
+
 #pragma mark - Location Manager Delegate
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
@@ -417,56 +432,44 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     currentLocation = locations.lastObject;
     speed = currentLocation.speed;
     
-    if (speed * 3.6f < 30.f) {
-       
+    if (self.activity != 3) {
         distance += ABS([currentLocation distanceFromLocation:self.oldLocation]);
-        self.isGray = NO;
-        
-    } else self.isGray = YES;
+    }
+    
+    [self activityCheck];
+    NSLog(@"%@",self.sportSession.activity);
     
     if (self.sportSession) {
         
         //Creating and archiving path from NSMutableArray to NSData
-        NSMutableArray *greenPathArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.greenPath]];
-        [greenPathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
-        NSData *greenPathData = [NSKeyedArchiver archivedDataWithRootObject:greenPathArray];
+        NSMutableArray *sessionPathArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.sessionPath]];
+        [sessionPathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
+        NSData *sessionPathData = [NSKeyedArchiver archivedDataWithRootObject:sessionPathArray];
         
         //Save session's data to Core Data
         self.sportSession.kilometers = @(distance/1000.f);
         self.sportSession.calories = @(self.burnedCalories);
         self.sportSession.speed = @([self averageSpeed]);
         self.sportSession.time = @(seconds);
-        self.sportSession.greenPath = greenPathData;
+        self.sportSession.sessionPath = sessionPathData;
         self.sportSession.activityInterval = @(self.activityInterval);
-        
-        switch (self.activity) {
-            case Walking:
-                self.sportSession.activity = @"Walking";
-                break;
-            case Running:
-                self.sportSession.activity = @"Runing";
-                break;
-            case Cycling:
-                self.sportSession.activity = @"Cycling";
-                break;
-        }
         
         [self.managedObjectContext save:nil];
     }
     
-    if (self.isGray) {
+    if (self.activity == 3) {
         
-        [self.grayPathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
+        [self.drivingPathArray addObjectsFromArray:@[@(currentLocation.coordinate.longitude),@(currentLocation.coordinate.latitude)]];
         
-    } else if (self.grayPathArray.count != 0) {
+    } else if (self.drivingPathArray.count != 0) {
         
-        NSMutableArray *grayArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.grayPath]];
-        [grayArray addObject:@[self.grayPathArray]];
+        NSMutableArray *drivingArray = [[NSMutableArray alloc]initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:self.sportSession.drivingPath]];
+        [drivingArray addObject:@[self.drivingPathArray]];
         
-        self.sportSession.grayPath = [NSKeyedArchiver archivedDataWithRootObject:grayArray];
+        self.sportSession.drivingPath = [NSKeyedArchiver archivedDataWithRootObject:drivingArray];
         [self.managedObjectContext save:nil];
         
-        [self.grayPathArray removeAllObjects];
+        [self.drivingPathArray removeAllObjects];
     }
     
     if (distance > 100.f) {
@@ -489,7 +492,6 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     
     ++self.sprintTime;
     self.sumSprintSpeed += speed * 3.6f;
-    NSLog(@"%i",self.sprintTime);
 }
 
 - (void)handlingSprint {
@@ -506,6 +508,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
         case Walking:
             self.sprintThreshold = 2.f;
             break;
+        case Driving:
+            self.sprintThreshold = 40.f;
 
     }
     
@@ -555,8 +559,8 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
 - (void)cleanSession {
     
     if (self.sportSession != nil) {
-        self.sportSession.greenPath = nil;
-        self.sportSession.grayPath = nil;
+        self.sportSession.sessionPath = nil;
+        self.sportSession.drivingPath = nil;
         
         // Deleting all log points in current session
         
@@ -573,6 +577,7 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     seconds = 0;
     self.activityInterval = 0;
     self.sprintTime = 0;
+    self.heartRate = 0;
     
     distance = 0.f;
     speed = 0.f;
@@ -584,10 +589,10 @@ void RGBtoHSV( CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat *s, CGFloat 
     currentLocation = nil;
     originLocation = nil;
     
-    self.heartRate = 0;
-    
     [self.sprintTimer invalidate];
-    [self.grayPathArray removeAllObjects];
+    [self.drivingPathArray removeAllObjects];
+    [self.speedArray removeAllObjects];
+    
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 

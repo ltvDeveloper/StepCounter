@@ -11,10 +11,10 @@
         <attribute name="activity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="activityInterval" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="calories" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="drivingPath" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="grayPath" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="greenPath" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="kilometers" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="sessionPath" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="speed" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="time" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>

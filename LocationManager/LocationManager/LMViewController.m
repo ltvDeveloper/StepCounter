@@ -138,7 +138,7 @@
 
 - (IBAction)onStartButton:(id)sender {
 
-    [self.sportTracker startTrackerWithActivityType:self.activityControl.selectedSegmentIndex];
+    [self.sportTracker startTracker];
     
     if (![self.trackerUpdateTimer isValid]) {
         self.trackerUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(trackerUpdate) userInfo:nil repeats:YES];
